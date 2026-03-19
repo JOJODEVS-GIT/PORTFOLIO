@@ -1,48 +1,49 @@
-# Portfolio — Josué Hounkanrin
+# 💼 PORTFOLIO
 
-Portfolio personnel de développeur web — site vitrine moderne avec animations et design dark.
+> Portfolio personnel responsive avec présentation de projets
 
-Développé par **[@JOJODEVS-GIT](https://github.com/JOJODEVS-GIT)**
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=flat-square&logo=vite&logoColor=white)
+![Tailwind](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)
 
----
+## 📋 Description
 
-## Fonctionnalités
+Portfolio personnel développeur présentant mes projets, compétences et services. Design dark theme moderne avec animations fluides et navigation responsive. Construit avec Vite et Tailwind CSS pour des performances optimales.
 
-- Hero section animée avec background effects
-- Section À propos avec photo et liens sociaux
-- Projets avec filtres par catégorie et modal détaillé
-- Compétences avec grille d'icônes animées
-- Timeline d'expérience professionnelle
-- Carrousel de témoignages clients
-- Formulaire de contact avec validation
-- Compteurs animés (projets, clients, expérience)
-- Navbar avec scroll progress et menu mobile
-- Dark mode par défaut
-- Animations Framer Motion au scroll
-- Responsive mobile
+## 🚀 Démo en ligne
 
-## Stack
+👉 [jojo-portfolio.vercel.app](https://jojo-portfolio.vercel.app)
 
-- **React 19** — UI Components
-- **Vite** — Build tool
-- **Tailwind CSS 4** — Styling
-- **Framer Motion** — Animations
-- **Lucide React** — Icônes
+## 📁 Structure du projet
 
-## Lancer en local
-
-```bash
-npm install
-npm run dev
+```
+PORTFOLIO/
+├── src/                # Code source
+├── public/             # Assets statiques
+├── dist/               # Build de production
+├── package.json
+├── tailwind.config.js
+└── vite.config.js
 ```
 
-## Build
+## 🛠️ Technologies
 
-```bash
-npm run build
-npm run preview
-```
+- **JavaScript** — Logique et interactions
+- **Vite** — Build tool rapide
+- **Tailwind CSS** — Styling utilitaire
+- **PostCSS** — Traitement CSS
 
-## Licence
+## ✨ Fonctionnalités
 
-Tous droits réservés.
+- Sections : Accueil, À propos, Projets, Compétences, Contact
+- Dark theme moderne
+- Animations fluides
+- 100% responsive
+- Performance optimisée
+
+## 👤 Auteur
+
+**Josué Hounkanrin (JOJO.DEV's)**
+- GitHub: [@JOJODEVS-GIT](https://github.com/JOJODEVS-GIT)
+- Email: jojohkdev@gmail.com
+- 📍 Cotonou, Bénin
