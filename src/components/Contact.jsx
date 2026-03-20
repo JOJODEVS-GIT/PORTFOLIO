@@ -35,16 +35,22 @@ export default function Contact() {
         setIsLoading(false);
         return;
       }
-      await emailjs.sendForm(
+      await emailjs.send(
         import.meta.env.VITE_EMAILJS_SERVICE_ID,
         import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
-        formRef.current,
-        import.meta.env.VITE_EMAILJS_PUBLIC_KEY,
+        {
+          from_name: formData.from_name,
+          from_email: formData.from_email,
+          message: formData.message,
+          time: new Date().toLocaleString('fr-FR'),
+        },
+        { publicKey: import.meta.env.VITE_EMAILJS_PUBLIC_KEY },
       );
       setStatus({ type: 'success', message: 'Message envoyé avec succès ! Merci !' });
       setFormData({ from_name: '', from_email: '', message: '' });
       setTimeout(() => setStatus(null), 5000);
-    } catch {
+    } catch (err) {
+      console.error('EmailJS error:', err);
       setStatus({ type: 'error', message: `Erreur d'envoi. Contactez-moi directement à ${email}` });
     } finally {
       setIsLoading(false);
