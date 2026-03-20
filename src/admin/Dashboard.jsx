@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import { useSiteData } from '../context/SiteDataContext';
 import { Link } from 'react-router-dom';
-import { doc, setDoc, collection, addDoc, getDocs, deleteDoc } from 'firebase/firestore';
-import { db } from '../firebase/config';
 import { useAuth } from '../context/AuthContext';
+import { restSetDoc, restAddDoc, restClearCollection } from '../firebase/firestoreRest';
 import {
   Settings, Sparkles, BarChart3, User, Route,
   Briefcase, FolderGit2, Code2, Mail, Database, CheckCircle, AlertCircle, RefreshCw
@@ -86,11 +85,6 @@ const seedData = {
   ],
 };
 
-async function clearCollection(colName) {
-  const snapshot = await getDocs(collection(db, colName));
-  await Promise.all(snapshot.docs.map((d) => deleteDoc(d.ref)));
-}
-
 export default function Dashboard() {
   const { stats, parcours, services, projects, skills } = useSiteData();
   const { user } = useAuth();
@@ -107,55 +101,6 @@ export default function Dashboard() {
 
   const totalItems = stats.length + parcours.length + services.length + projects.length + skills.length;
 
-  // Test Firestore via REST API (bypass SDK)
-  const handleTestWrite = async () => {
-    setStatus({ type: 'info', message: 'Test de connexion Firestore...' });
-
-    try {
-      // Get the user's auth token
-      const token = await user.getIdToken();
-      alert(`Token obtenu: ${token.substring(0, 20)}...`);
-
-      const projectId = 'jojo-portfolio';
-      const url = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/settings/_test`;
-
-      // Test WRITE via REST API
-      alert('Étape 1: Écriture REST...');
-      const writeRes = await fetch(url, {
-        method: 'PATCH',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          fields: { test: { booleanValue: true }, time: { stringValue: new Date().toISOString() } }
-        }),
-      });
-
-      if (!writeRes.ok) {
-        const errBody = await writeRes.text();
-        alert(`Écriture ÉCHOUÉE: ${writeRes.status}\n${errBody}`);
-        setStatus({ type: 'error', message: `REST Write: ${writeRes.status} — ${errBody.substring(0, 200)}` });
-        return;
-      }
-
-      alert('Étape 2: Écriture OK ! Suppression...');
-
-      // Test DELETE via REST API
-      const delRes = await fetch(url, {
-        method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` },
-      });
-
-      alert(`Étape 3: Suppression ${delRes.ok ? 'OK' : 'ÉCHOUÉE: ' + delRes.status}`);
-      setStatus({ type: 'success', message: `Firestore REST OK ! Connecté: ${user?.email}` });
-    } catch (err) {
-      alert(`ERREUR: ${err.message}`);
-      console.error('Test REST error:', err);
-      setStatus({ type: 'error', message: `ERREUR REST: ${err.message}` });
-    }
-  };
-
   const handleSeed = async (reset = false) => {
     if (!user) {
       setStatus({ type: 'error', message: 'Vous devez être connecté pour importer des données.' });
@@ -171,33 +116,36 @@ export default function Dashboard() {
     setStatus(null);
     const colNames = ['stats', 'parcours', 'services', 'projects', 'skills'];
     try {
-      // If reset, clear collections first
+      // If reset, clear collections first via REST
       if (reset) {
         setStatus({ type: 'info', message: 'Suppression des anciennes données...' });
         for (const colName of colNames) {
-          await clearCollection(colName);
+          await restClearCollection(user, colName);
         }
       }
 
-      // Seed settings one by one (4 docs only)
+      // Seed settings via REST
       setStatus({ type: 'info', message: 'Import des paramètres...' });
       for (const [docId, data] of Object.entries(seedData.settings)) {
-        await setDoc(doc(db, 'settings', docId), data);
+        await restSetDoc(user, 'settings', docId, data);
       }
 
-      // Seed collections one by one
-      setStatus({ type: 'info', message: 'Import des collections...' });
+      // Seed collections via REST
+      let done = 0;
+      const totalDocs = colNames.reduce((sum, c) => sum + seedData[c].length, 0);
       for (const colName of colNames) {
         for (const item of seedData[colName]) {
-          await addDoc(collection(db, colName), item);
+          await restAddDoc(user, colName, item);
+          done++;
+          setStatus({ type: 'info', message: `Import en cours... ${done}/${totalDocs}` });
         }
       }
 
-      setStatus({ type: 'success', message: 'Données importées avec succès ! Le site se met à jour en temps réel.' });
-      setTimeout(() => setStatus(null), 5000);
+      setStatus({ type: 'success', message: `${totalDocs} éléments importés avec succès ! Le site se met à jour en temps réel.` });
+      setTimeout(() => setStatus(null), 8000);
     } catch (err) {
       console.error('Seed error:', err);
-      setStatus({ type: 'error', message: `Erreur: [${err.code}] ${err.message}` });
+      setStatus({ type: 'error', message: `Erreur: ${err.message}` });
     } finally {
       setSeeding(false);
     }
@@ -246,13 +194,6 @@ export default function Dashboard() {
           }
         </p>
         <div className="flex flex-wrap justify-center gap-3">
-          <button
-            onClick={handleTestWrite}
-            disabled={seeding}
-            className="btn-secondary inline-flex items-center gap-2 disabled:opacity-50"
-          >
-            <CheckCircle size={18} /> Tester Firestore
-          </button>
           <button
             onClick={() => handleSeed(false)}
             disabled={seeding}
