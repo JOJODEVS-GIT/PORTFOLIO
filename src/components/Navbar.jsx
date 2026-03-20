@@ -1,128 +1,153 @@
-import { useEffect, useState } from 'react';
-import { Menu, X, Moon, Sun } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { useEffect, useState, useCallback } from 'react';
+import { Menu, X, Sun, Moon, Shield } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { useSiteData } from '../context/SiteDataContext';
+import { useTheme } from '../context/ThemeContext';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const [isDark, setIsDark] = useState(true);
   const [isScrolled, setIsScrolled] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
+  const { site } = useSiteData();
+  const { theme, toggleTheme } = useTheme();
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const scrolled = window.scrollY;
-      setIsScrolled(scrolled > 50);
-      setScrollProgress((scrolled / scrollHeight) * 100);
-    };
+  const logoText = site?.logoText || 'JOJO';
+  const logoDot = site?.logoDot || ".DEV's";
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+  const handleScroll = useCallback(() => {
+    const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const scrolled = window.scrollY;
+    setIsScrolled(scrolled > 50);
+    setScrollProgress(scrollHeight > 0 ? (scrolled / scrollHeight) * 100 : 0);
   }, []);
 
-  const toggleDarkMode = () => {
-    setIsDark(!isDark);
-    document.documentElement.classList.toggle('dark', !isDark);
-    document.body.classList.toggle('light', isDark);
-  };
+  useEffect(() => {
+    let ticking = false;
+    const onScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          handleScroll();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [handleScroll]);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && isOpen) setIsOpen(false);
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen]);
 
   const navLinks = [
     { label: 'Accueil', href: '#hero' },
     { label: 'À propos', href: '#about' },
+    { label: 'Services', href: '#services' },
+    { label: 'Parcours', href: '#parcours' },
     { label: 'Projets', href: '#projects' },
     { label: 'Compétences', href: '#skills' },
     { label: 'Contact', href: '#contact' },
   ];
 
   return (
-    <>
-      <motion.nav
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          isScrolled
-            ? 'bg-gray-900/95 backdrop-blur border-b border-gray-800/30 shadow-lg'
-            : 'bg-transparent'
-        }`}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            {/* Logo */}
-            <motion.a
-              href="#hero"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.1 }}
-              className="text-2xl font-bold bg-gradient-to-r from-emerald-500 to-teal-500 bg-clip-text text-transparent"
-            >
-              Portfolio
-            </motion.a>
+    <nav
+      aria-label="Navigation principale"
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 animate-slide-down ${
+        isScrolled
+          ? 'backdrop-blur border-b shadow-lg'
+          : 'bg-transparent'
+      }`}
+      style={isScrolled ? {
+        backgroundColor: 'var(--nav-bg)',
+        borderColor: 'rgba(22,199,154,0.1)',
+      } : {}}
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          <a
+            href="#hero"
+            className="text-2xl font-bold animate-fade-in"
+          >
+            <span style={{ color: 'var(--text-primary)' }}>{logoText}</span>
+            <span className="text-[#16C79A]">{logoDot}</span>
+          </a>
 
-            {/* Desktop Menu */}
-            <div className="hidden md:flex items-center gap-8">
-              {navLinks.map((link, idx) => (
-                <a
-                  key={idx}
-                  href={link.href}
-                  className="nav-link"
-                >
-                  {link.label}
-                </a>
-              ))}
-            </div>
-
-            {/* Right Actions */}
-            <div className="flex items-center gap-4">
-              <button
-                onClick={toggleDarkMode}
-                className="p-2 rounded-lg hover:bg-gray-800 transition-colors"
-                aria-label="Toggle dark mode"
-              >
-                {isDark ? (
-                  <Sun size={20} className="text-yellow-400" />
-                ) : (
-                  <Moon size={20} className="text-gray-900" />
-                )}
-              </button>
-
-              {/* Mobile Menu Button */}
-              <button
-                onClick={() => setIsOpen(!isOpen)}
-                className="md:hidden p-2"
-                aria-label="Toggle menu"
-              >
-                {isOpen ? <X size={24} /> : <Menu size={24} />}
-              </button>
-            </div>
+          <div className="hidden md:flex items-center gap-8">
+            {navLinks.map((link, idx) => (
+              <a key={idx} href={link.href} className="nav-link">
+                {link.label}
+              </a>
+            ))}
           </div>
 
-          {/* Mobile Menu */}
-          {isOpen && (
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="md:hidden pb-4 border-t border-gray-800"
+          <div className="flex items-center gap-2">
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded-lg transition-colors hover:bg-[var(--bg-card)]"
+              aria-label={theme === 'dark' ? 'Passer au thème clair' : 'Passer au thème sombre'}
+              title={theme === 'dark' ? 'Mode clair' : 'Mode sombre'}
             >
-              {navLinks.map((link, idx) => (
-                <a
-                  key={idx}
-                  href={link.href}
-                  className="block px-4 py-2 text-gray-300 hover:text-white hover:bg-gray-800/50 rounded transition-colors"
-                  onClick={() => setIsOpen(false)}
-                >
-                  {link.label}
-                </a>
-              ))}
-            </motion.div>
-          )}
+              {theme === 'dark' ? (
+                <Sun size={20} style={{ color: 'var(--text-secondary)' }} />
+              ) : (
+                <Moon size={20} style={{ color: 'var(--text-secondary)' }} />
+              )}
+            </button>
+
+            <Link
+              to="/admin"
+              className="p-2 rounded-lg transition-colors hover:bg-[var(--bg-card)]"
+              aria-label="Administration"
+              title="Admin"
+            >
+              <Shield size={18} style={{ color: 'var(--text-muted)' }} />
+            </Link>
+
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="md:hidden p-2"
+              aria-label="Ouvrir le menu"
+              aria-expanded={isOpen}
+            >
+              {isOpen ? (
+                <X size={24} style={{ color: 'var(--text-primary)' }} />
+              ) : (
+                <Menu size={24} style={{ color: 'var(--text-primary)' }} />
+              )}
+            </button>
+          </div>
         </div>
 
-        {/* Scroll Progress Bar */}
-        <div className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-emerald-500 to-teal-500 transition-all duration-300"
-          style={{ width: `${scrollProgress}%` }}
-        />
-      </motion.nav>
-    </>
+        {isOpen && (
+          <div className="md:hidden pb-4 border-t border-[var(--border-card)] animate-fade-in">
+            {navLinks.map((link, idx) => (
+              <a
+                key={idx}
+                href={link.href}
+                className="block px-4 py-2 rounded transition-colors"
+                style={{ color: 'var(--text-secondary)' }}
+                onClick={() => setIsOpen(false)}
+              >
+                {link.label}
+              </a>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div
+        className="absolute bottom-0 left-0 h-[2px] transition-all duration-300"
+        style={{
+          width: `${scrollProgress}%`,
+          background: `linear-gradient(to right, var(--accent), var(--accent-dark))`,
+        }}
+      />
+    </nav>
   );
 }

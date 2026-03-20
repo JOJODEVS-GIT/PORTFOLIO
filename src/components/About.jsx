@@ -1,13 +1,29 @@
 import { motion } from 'framer-motion';
-import { Github, Linkedin, Twitter, Mail } from 'lucide-react';
+import { Github, MessageCircle, Mail } from 'lucide-react';
+import { useSiteData } from '../context/SiteDataContext';
+
+const fallbackParagraphs = [
+  'Je suis Josué, développeur Full Stack basé à Cotonou 🇧🇯. Je crée des sites web modernes avec React et Next.js, des sites vitrine/e-commerce avec WordPress, et j\'automatise les process répétitifs avec Python.',
+  'Passionné par la technologie et l\'innovation, je transforme des idées en projets concrets et fonctionnels. Mon objectif : fournir des solutions digitales de qualité, adaptées aux réalités locales africaines.',
+];
+
+const fallbackTagline = '📍 Cotonou, Bénin \u2022 🎯 Projets avec impact \u2022 💡 Full Stack & Automatisation';
 
 export default function About() {
+  const { about } = useSiteData();
+
+  const photoUrl = about?.photoUrl || '/images/1.webp';
+  const paragraphs = about?.paragraphs?.length ? about.paragraphs : fallbackParagraphs;
+  const tagline = about?.tagline || fallbackTagline;
+  const socialLinks = about?.socialLinks || {
+    github: 'https://github.com/JOJODEVS-GIT',
+    whatsapp: 'https://wa.me/2290160293043',
+    email: 'mailto:jojohkdev@gmail.com',
+  };
+
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.2 },
-    },
+    visible: { opacity: 1, transition: { staggerChildren: 0.2 } },
   };
 
   const itemVariants = {
@@ -16,7 +32,7 @@ export default function About() {
   };
 
   return (
-    <section id="about" className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-900/50">
+    <section id="about" className="py-20 px-4 sm:px-6 lg:px-8" style={{ backgroundColor: 'var(--bg-accent)' }}>
       <div className="max-w-6xl mx-auto">
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
@@ -25,7 +41,7 @@ export default function About() {
           viewport={{ once: true }}
           className="text-4xl md:text-5xl font-bold mb-16 text-center"
         >
-          À <span className="bg-gradient-to-r from-emerald-500 to-teal-500 bg-clip-text text-transparent">propos</span> de moi
+          À <span className="accent-gradient">propos</span> de moi
         </motion.h2>
 
         <motion.div
@@ -35,65 +51,65 @@ export default function About() {
           whileInView="visible"
           viewport={{ once: true }}
         >
-          {/* Image */}
-          <motion.div
-            variants={itemVariants}
-            className="flex justify-center"
-          >
-            <div className="relative w-64 h-64 md:w-80 md:h-80">
-              <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl blur-2xl opacity-30"></div>
-              <div className="relative w-full h-full bg-gray-800 rounded-2xl overflow-hidden border border-gray-700">
+          <motion.div variants={itemVariants} className="flex justify-center">
+            <div className="relative w-72 h-72 md:w-96 md:h-96">
+              {/* Glow background */}
+              <div className="absolute -inset-4 bg-gradient-to-r from-[#16C79A] to-[#0F3460] rounded-3xl blur-2xl opacity-25 animate-pulse" />
+              {/* Rotating border ring */}
+              <div
+                className="absolute -inset-1 rounded-3xl opacity-60"
+                style={{
+                  background: 'linear-gradient(135deg, #16C79A, #0F3460, #16C79A)',
+                  animation: 'spin 8s linear infinite',
+                }}
+              />
+              {/* Photo container */}
+              <div className="relative w-full h-full rounded-3xl overflow-hidden border-2 border-[#16C79A]/30 shadow-2xl" style={{ background: 'var(--bg-card)' }}>
                 <img
-                  src="/images/1.png"
+                  src={photoUrl}
                   alt="Josué Hounkanrin"
-                  className="w-full h-full object-cover"
+                  width={400}
+                  height={500}
+                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+                  loading="lazy"
                 />
+                {/* Subtle gradient overlay at bottom */}
+                <div className="absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-t from-black/40 to-transparent" />
               </div>
             </div>
           </motion.div>
 
-          {/* Bio */}
           <motion.div variants={itemVariants} className="space-y-6">
-            <p className="text-gray-300 text-lg leading-relaxed">
-              Je suis Josué, développeur web WordPress et marketeur digital avec 1-2 ans d'expérience pratique intensive. Je crée des sites web professionnels, efficaces et adaptés aux réalités locales africaines.
-            </p>
+            {paragraphs.map((p, idx) => (
+              <p key={idx} className="text-lg leading-relaxed" style={{ color: 'var(--text-secondary)' }}>{p}</p>
+            ))}
 
-            <p className="text-gray-300 text-lg leading-relaxed">
-              Ma passion: transformer des idées simples en projets concrets et fonctionnels. Je maîtrise WordPress, WooCommerce, JavaScript, et les outils marketing digital. Actuellement en développement de compétences front-end & back-end pour des solutions toujours plus solides.
-            </p>
-            
-            <p className="text-gray-300 text-lg leading-relaxed">
-              📍 Basé au Bénin • 🎯 Projets avec impact • 💡 Solutions no-code & code
-            </p>
+            <p className="text-lg" style={{ color: 'var(--text-muted)' }}>{tagline}</p>
 
-            <div className="pt-6 border-t border-gray-700">
-              <h3 className="text-lg font-semibold mb-4">Me contacter:</h3>
+            <div className="pt-6 border-t border-[#16C79A]/20">
+              <h3 className="text-lg font-semibold mb-4">Me retrouver :</h3>
               <div className="flex gap-4">
-                <a
-                  href="https://github.com/josue-dev"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-3 bg-gray-800 rounded-lg hover:bg-emerald-500/20 hover:border-emerald-500/50 border border-gray-700 transition-all glow-effect"
-                  aria-label="GitHub"
-                >
-                  <Github size={24} />
-                </a>
-                <a
-                  href="https://www.linkedin.com/in/josue-web"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-3 bg-gray-800 rounded-lg hover:bg-emerald-500/20 hover:border-emerald-500/50 border border-gray-700 transition-all glow-effect"
-                  aria-label="LinkedIn"
-                >
-                  <Linkedin size={24} />
-                </a>
-                <a
-                  href="mailto:josue.dev@gmail.com"
-                  className="p-3 bg-gray-800 rounded-lg hover:bg-emerald-500/20 hover:border-emerald-500/50 border border-gray-700 transition-all glow-effect"
-                  aria-label="Email"
-                >
-                  <Mail size={24} />
-                </a>
+                {socialLinks.github && (
+                  <a href={socialLinks.github} target="_blank" rel="noopener noreferrer"
+                    className="p-3 rounded-lg border border-[#16C79A]/20 transition-all glow-effect hover:bg-[#16C79A]/20"
+                    style={{ background: 'var(--bg-card)' }} aria-label="GitHub">
+                    <Github size={24} />
+                  </a>
+                )}
+                {socialLinks.whatsapp && (
+                  <a href={socialLinks.whatsapp} target="_blank" rel="noopener noreferrer"
+                    className="p-3 rounded-lg border border-[#16C79A]/20 transition-all glow-effect hover:bg-[#16C79A]/20"
+                    style={{ background: 'var(--bg-card)' }} aria-label="WhatsApp">
+                    <MessageCircle size={24} />
+                  </a>
+                )}
+                {socialLinks.email && (
+                  <a href={socialLinks.email.startsWith('mailto:') ? socialLinks.email : `mailto:${socialLinks.email}`}
+                    className="p-3 rounded-lg border border-[#16C79A]/20 transition-all glow-effect hover:bg-[#16C79A]/20"
+                    style={{ background: 'var(--bg-card)' }} aria-label="Email">
+                    <Mail size={24} />
+                  </a>
+                )}
               </div>
             </div>
           </motion.div>
