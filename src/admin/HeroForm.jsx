@@ -6,7 +6,7 @@ import FormField from './components/FormField';
 import { Save, CheckCircle, AlertCircle } from 'lucide-react';
 
 export default function HeroForm() {
-  const { hero } = useSiteData();
+  const { hero, refreshData } = useSiteData();
   const { user } = useAuth();
   const [form, setForm] = useState({
     badge: 'Bienvenue 👋',
@@ -38,6 +38,7 @@ export default function HeroForm() {
     try {
       const { id, ...data } = form;
       await restSetDoc(user, 'settings', 'hero', data);
+      await refreshData();
       setStatus({ type: 'success', message: 'Section Hero sauvegardée !' });
       setTimeout(() => setStatus(null), 3000);
     } catch (err) {

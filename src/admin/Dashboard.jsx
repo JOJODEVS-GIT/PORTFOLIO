@@ -86,7 +86,7 @@ const seedData = {
 };
 
 export default function Dashboard() {
-  const { stats, parcours, services, projects, skills } = useSiteData();
+  const { stats, parcours, services, projects, skills, refreshData } = useSiteData();
   const { user } = useAuth();
   const [seeding, setSeeding] = useState(false);
   const [status, setStatus] = useState(null);
@@ -141,8 +141,9 @@ export default function Dashboard() {
         }
       }
 
-      setStatus({ type: 'success', message: `${totalDocs} éléments importés avec succès ! Le site se met à jour en temps réel.` });
-      setTimeout(() => setStatus(null), 8000);
+      await refreshData();
+      setStatus({ type: 'success', message: `${totalDocs} éléments importés avec succès !` });
+      setTimeout(() => setStatus(null), 5000);
     } catch (err) {
       console.error('Seed error:', err);
       setStatus({ type: 'error', message: `Erreur: ${err.message}` });

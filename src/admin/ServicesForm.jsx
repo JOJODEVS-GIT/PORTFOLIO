@@ -15,7 +15,7 @@ const emptyForm = {
 };
 
 export default function ServicesForm() {
-  const { services } = useSiteData();
+  const { services, refreshData } = useSiteData();
   const { user } = useAuth();
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState({ ...emptyForm, order: services.length });
@@ -42,6 +42,7 @@ export default function ServicesForm() {
     if (confirm('Supprimer ce service ?')) {
       try {
         await restDeleteDoc(user, 'services', id);
+        await refreshData();
         setStatus({ type: 'success', message: 'Service supprimé' });
       } catch (err) {
         console.error(err);
@@ -75,6 +76,7 @@ export default function ServicesForm() {
       } else {
         await restAddDoc(user, 'services', data);
       }
+      await refreshData();
       setStatus({ type: 'success', message: editing ? 'Service modifié' : 'Service ajouté' });
       resetForm();
     } catch (err) {

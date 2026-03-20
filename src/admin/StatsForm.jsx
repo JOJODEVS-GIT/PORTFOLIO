@@ -7,7 +7,7 @@ import ItemList from './components/ItemList';
 import { Plus, Save, X } from 'lucide-react';
 
 export default function StatsForm() {
-  const { stats } = useSiteData();
+  const { stats, refreshData } = useSiteData();
   const { user } = useAuth();
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState({ number: '', label: '', suffix: '+', order: 0 });
@@ -28,6 +28,7 @@ export default function StatsForm() {
     if (confirm('Supprimer cette stat ?')) {
       try {
         await restDeleteDoc(user, 'stats', id);
+        await refreshData();
         setStatus({ type: 'success', message: 'Stat supprimée' });
       } catch (err) {
         console.error(err);
@@ -48,6 +49,7 @@ export default function StatsForm() {
       } else {
         await restAddDoc(user, 'stats', data);
       }
+      await refreshData();
       setStatus({ type: 'success', message: editing ? 'Stat modifiée' : 'Stat ajoutée' });
       resetForm();
     } catch (err) {

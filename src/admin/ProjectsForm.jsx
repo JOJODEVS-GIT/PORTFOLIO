@@ -20,7 +20,7 @@ const emptyForm = {
 };
 
 export default function ProjectsForm() {
-  const { projects } = useSiteData();
+  const { projects, refreshData } = useSiteData();
   const { user } = useAuth();
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState({ ...emptyForm, order: projects.length });
@@ -51,6 +51,7 @@ export default function ProjectsForm() {
     if (confirm('Supprimer ce projet ?')) {
       try {
         await restDeleteDoc(user, 'projects', id);
+        await refreshData();
         setStatus({ type: 'success', message: 'Projet supprimé' });
       } catch (err) {
         console.error(err);
@@ -84,6 +85,7 @@ export default function ProjectsForm() {
       } else {
         await restAddDoc(user, 'projects', data);
       }
+      await refreshData();
       setStatus({ type: 'success', message: editing ? 'Projet modifié' : 'Projet ajouté' });
       resetForm();
     } catch (err) {

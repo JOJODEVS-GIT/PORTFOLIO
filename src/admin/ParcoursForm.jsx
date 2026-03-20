@@ -18,7 +18,7 @@ const emptyForm = {
 };
 
 export default function ParcoursForm() {
-  const { parcours } = useSiteData();
+  const { parcours, refreshData } = useSiteData();
   const { user } = useAuth();
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState({ ...emptyForm, order: parcours.length });
@@ -48,6 +48,7 @@ export default function ParcoursForm() {
     if (confirm('Supprimer cet élément ?')) {
       try {
         await restDeleteDoc(user, 'parcours', id);
+        await refreshData();
         setStatus({ type: 'success', message: 'Élément supprimé' });
       } catch (err) {
         console.error(err);
@@ -68,6 +69,7 @@ export default function ParcoursForm() {
       } else {
         await restAddDoc(user, 'parcours', data);
       }
+      await refreshData();
       setStatus({ type: 'success', message: editing ? 'Élément modifié' : 'Élément ajouté' });
       resetForm();
     } catch (err) {

@@ -6,7 +6,7 @@ import FormField from './components/FormField';
 import { Save, CheckCircle, AlertCircle } from 'lucide-react';
 
 export default function SiteSettingsForm() {
-  const { site } = useSiteData();
+  const { site, refreshData } = useSiteData();
   const { user } = useAuth();
   const [form, setForm] = useState({
     logoText: 'JOJO',
@@ -33,6 +33,7 @@ export default function SiteSettingsForm() {
     try {
       const { id, ...data } = form;
       await restSetDoc(user, 'settings', 'site', data);
+      await refreshData();
       setStatus({ type: 'success', message: 'Paramètres sauvegardés !' });
       setTimeout(() => setStatus(null), 3000);
     } catch (err) {

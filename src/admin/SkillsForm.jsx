@@ -14,7 +14,7 @@ const emptyForm = {
 };
 
 export default function SkillsForm() {
-  const { skills } = useSiteData();
+  const { skills, refreshData } = useSiteData();
   const { user } = useAuth();
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState({ ...emptyForm, order: skills.length });
@@ -40,6 +40,7 @@ export default function SkillsForm() {
     if (confirm('Supprimer cette compétence ?')) {
       try {
         await restDeleteDoc(user, 'skills', id);
+        await refreshData();
         setStatus({ type: 'success', message: 'Compétence supprimée' });
       } catch (err) {
         console.error(err);
@@ -60,6 +61,7 @@ export default function SkillsForm() {
       } else {
         await restAddDoc(user, 'skills', data);
       }
+      await refreshData();
       setStatus({ type: 'success', message: editing ? 'Compétence modifiée' : 'Compétence ajoutée' });
       resetForm();
     } catch (err) {

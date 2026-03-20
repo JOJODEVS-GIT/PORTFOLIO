@@ -7,7 +7,7 @@ import ImageUpload from './components/ImageUpload';
 import { Save, CheckCircle, AlertCircle, Plus, X } from 'lucide-react';
 
 export default function AboutForm() {
-  const { about } = useSiteData();
+  const { about, refreshData } = useSiteData();
   const { user } = useAuth();
   const [form, setForm] = useState({
     photoUrl: '/images/1.webp',
@@ -39,6 +39,7 @@ export default function AboutForm() {
     try {
       const { id, ...data } = form;
       await restSetDoc(user, 'settings', 'about', data);
+      await refreshData();
       setStatus({ type: 'success', message: 'Section À propos sauvegardée !' });
       setTimeout(() => setStatus(null), 3000);
     } catch (err) {

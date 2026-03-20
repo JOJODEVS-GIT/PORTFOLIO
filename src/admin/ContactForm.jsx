@@ -6,7 +6,7 @@ import FormField from './components/FormField';
 import { Save, CheckCircle, AlertCircle } from 'lucide-react';
 
 export default function ContactForm() {
-  const { contact } = useSiteData();
+  const { contact, refreshData } = useSiteData();
   const { user } = useAuth();
   const [form, setForm] = useState({
     email: 'jojohkdev@gmail.com',
@@ -34,6 +34,7 @@ export default function ContactForm() {
     try {
       const { id, ...data } = form;
       await restSetDoc(user, 'settings', 'contact', data);
+      await refreshData();
       setStatus({ type: 'success', message: 'Infos contact sauvegardées !' });
       setTimeout(() => setStatus(null), 3000);
     } catch (err) {
