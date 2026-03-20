@@ -41,10 +41,12 @@ export default function Contact() {
         {
           from_name: formData.from_name,
           from_email: formData.from_email,
+          name: formData.from_name,
+          email: formData.from_email,
           message: formData.message,
           time: new Date().toLocaleString('fr-FR'),
         },
-        { publicKey: import.meta.env.VITE_EMAILJS_PUBLIC_KEY },
+        import.meta.env.VITE_EMAILJS_PUBLIC_KEY,
       );
       setStatus({ type: 'success', message: 'Message envoyé avec succès ! Merci !' });
       setFormData({ from_name: '', from_email: '', message: '' });
