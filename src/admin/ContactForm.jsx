@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
-import { doc, setDoc } from 'firebase/firestore';
-import { db } from '../firebase/config';
 import { useSiteData } from '../context/SiteDataContext';
+import { useAuth } from '../context/AuthContext';
+import { restSetDoc } from '../firebase/firestoreRest';
 import FormField from './components/FormField';
 import { Save, CheckCircle, AlertCircle } from 'lucide-react';
 
 export default function ContactForm() {
   const { contact } = useSiteData();
+  const { user } = useAuth();
   const [form, setForm] = useState({
     email: 'jojohkdev@gmail.com',
     whatsapp: 'https://wa.me/2290160293043',
@@ -32,7 +33,7 @@ export default function ContactForm() {
     setStatus(null);
     try {
       const { id, ...data } = form;
-      await setDoc(doc(db, 'settings', 'contact'), data);
+      await restSetDoc(user, 'settings', 'contact', data);
       setStatus({ type: 'success', message: 'Infos contact sauvegardées !' });
       setTimeout(() => setStatus(null), 3000);
     } catch (err) {

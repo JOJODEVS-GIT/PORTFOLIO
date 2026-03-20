@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { collection, addDoc, doc, updateDoc, deleteDoc } from 'firebase/firestore';
-import { db } from '../firebase/config';
 import { useSiteData } from '../context/SiteDataContext';
+import { useAuth } from '../context/AuthContext';
+import { restSetDoc, restAddDoc, restDeleteDoc } from '../firebase/firestoreRest';
 import FormField from './components/FormField';
 import ItemList from './components/ItemList';
 import { Plus, Save, X } from 'lucide-react';
@@ -19,6 +19,7 @@ const emptyForm = {
 
 export default function ParcoursForm() {
   const { parcours } = useSiteData();
+  const { user } = useAuth();
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState({ ...emptyForm, order: parcours.length });
 
@@ -46,7 +47,7 @@ export default function ParcoursForm() {
   const handleDelete = async (id) => {
     if (confirm('Supprimer cet élément ?')) {
       try {
-        await deleteDoc(doc(db, 'parcours', id));
+        await restDeleteDoc(user, 'parcours', id);
         setStatus({ type: 'success', message: 'Élément supprimé' });
       } catch (err) {
         console.error(err);
@@ -63,9 +64,9 @@ export default function ParcoursForm() {
 
     try {
       if (editing) {
-        await updateDoc(doc(db, 'parcours', editing), data);
+        await restSetDoc(user, 'parcours', editing, data);
       } else {
-        await addDoc(collection(db, 'parcours'), data);
+        await restAddDoc(user, 'parcours', data);
       }
       setStatus({ type: 'success', message: editing ? 'Élément modifié' : 'Élément ajouté' });
       resetForm();

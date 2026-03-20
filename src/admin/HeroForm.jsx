@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
-import { doc, setDoc } from 'firebase/firestore';
-import { db } from '../firebase/config';
 import { useSiteData } from '../context/SiteDataContext';
+import { useAuth } from '../context/AuthContext';
+import { restSetDoc } from '../firebase/firestoreRest';
 import FormField from './components/FormField';
 import { Save, CheckCircle, AlertCircle } from 'lucide-react';
 
 export default function HeroForm() {
   const { hero } = useSiteData();
+  const { user } = useAuth();
   const [form, setForm] = useState({
     badge: 'Bienvenue 👋',
     title: 'Salut, je suis',
@@ -36,7 +37,7 @@ export default function HeroForm() {
     setStatus(null);
     try {
       const { id, ...data } = form;
-      await setDoc(doc(db, 'settings', 'hero'), data);
+      await restSetDoc(user, 'settings', 'hero', data);
       setStatus({ type: 'success', message: 'Section Hero sauvegardée !' });
       setTimeout(() => setStatus(null), 3000);
     } catch (err) {

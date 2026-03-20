@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
-import { doc, setDoc } from 'firebase/firestore';
-import { db } from '../firebase/config';
 import { useSiteData } from '../context/SiteDataContext';
+import { useAuth } from '../context/AuthContext';
+import { restSetDoc } from '../firebase/firestoreRest';
 import FormField from './components/FormField';
 import ImageUpload from './components/ImageUpload';
 import { Save, CheckCircle, AlertCircle, Plus, X } from 'lucide-react';
 
 export default function AboutForm() {
   const { about } = useSiteData();
+  const { user } = useAuth();
   const [form, setForm] = useState({
     photoUrl: '/images/1.webp',
     paragraphs: [
@@ -37,7 +38,7 @@ export default function AboutForm() {
     setStatus(null);
     try {
       const { id, ...data } = form;
-      await setDoc(doc(db, 'settings', 'about'), data);
+      await restSetDoc(user, 'settings', 'about', data);
       setStatus({ type: 'success', message: 'Section À propos sauvegardée !' });
       setTimeout(() => setStatus(null), 3000);
     } catch (err) {

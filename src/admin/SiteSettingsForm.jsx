@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
-import { doc, setDoc } from 'firebase/firestore';
-import { db } from '../firebase/config';
 import { useSiteData } from '../context/SiteDataContext';
+import { useAuth } from '../context/AuthContext';
+import { restSetDoc } from '../firebase/firestoreRest';
 import FormField from './components/FormField';
 import { Save, CheckCircle, AlertCircle } from 'lucide-react';
 
 export default function SiteSettingsForm() {
   const { site } = useSiteData();
+  const { user } = useAuth();
   const [form, setForm] = useState({
     logoText: 'JOJO',
     logoDot: ".DEV's",
@@ -31,7 +32,7 @@ export default function SiteSettingsForm() {
     setStatus(null);
     try {
       const { id, ...data } = form;
-      await setDoc(doc(db, 'settings', 'site'), data);
+      await restSetDoc(user, 'settings', 'site', data);
       setStatus({ type: 'success', message: 'Paramètres sauvegardés !' });
       setTimeout(() => setStatus(null), 3000);
     } catch (err) {

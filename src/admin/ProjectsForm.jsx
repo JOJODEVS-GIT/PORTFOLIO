@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { collection, addDoc, doc, updateDoc, deleteDoc } from 'firebase/firestore';
-import { db } from '../firebase/config';
 import { useSiteData } from '../context/SiteDataContext';
+import { useAuth } from '../context/AuthContext';
+import { restSetDoc, restAddDoc, restDeleteDoc } from '../firebase/firestoreRest';
 import FormField from './components/FormField';
 import ImageUpload from './components/ImageUpload';
 import ItemList from './components/ItemList';
@@ -21,6 +21,7 @@ const emptyForm = {
 
 export default function ProjectsForm() {
   const { projects } = useSiteData();
+  const { user } = useAuth();
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState({ ...emptyForm, order: projects.length });
 
@@ -49,7 +50,7 @@ export default function ProjectsForm() {
   const handleDelete = async (id) => {
     if (confirm('Supprimer ce projet ?')) {
       try {
-        await deleteDoc(doc(db, 'projects', id));
+        await restDeleteDoc(user, 'projects', id);
         setStatus({ type: 'success', message: 'Projet supprimé' });
       } catch (err) {
         console.error(err);
@@ -79,9 +80,9 @@ export default function ProjectsForm() {
 
     try {
       if (editing) {
-        await updateDoc(doc(db, 'projects', editing), data);
+        await restSetDoc(user, 'projects', editing, data);
       } else {
-        await addDoc(collection(db, 'projects'), data);
+        await restAddDoc(user, 'projects', data);
       }
       setStatus({ type: 'success', message: editing ? 'Projet modifié' : 'Projet ajouté' });
       resetForm();

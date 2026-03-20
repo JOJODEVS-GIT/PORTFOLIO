@@ -1,13 +1,14 @@
 import { useState } from 'react';
-import { collection, addDoc, doc, updateDoc, deleteDoc } from 'firebase/firestore';
-import { db } from '../firebase/config';
 import { useSiteData } from '../context/SiteDataContext';
+import { useAuth } from '../context/AuthContext';
+import { restSetDoc, restAddDoc, restDeleteDoc } from '../firebase/firestoreRest';
 import FormField from './components/FormField';
 import ItemList from './components/ItemList';
 import { Plus, Save, X } from 'lucide-react';
 
 export default function StatsForm() {
   const { stats } = useSiteData();
+  const { user } = useAuth();
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState({ number: '', label: '', suffix: '+', order: 0 });
 
@@ -26,7 +27,7 @@ export default function StatsForm() {
   const handleDelete = async (id) => {
     if (confirm('Supprimer cette stat ?')) {
       try {
-        await deleteDoc(doc(db, 'stats', id));
+        await restDeleteDoc(user, 'stats', id);
         setStatus({ type: 'success', message: 'Stat supprimée' });
       } catch (err) {
         console.error(err);
@@ -43,9 +44,9 @@ export default function StatsForm() {
 
     try {
       if (editing) {
-        await updateDoc(doc(db, 'stats', editing), data);
+        await restSetDoc(user, 'stats', editing, data);
       } else {
-        await addDoc(collection(db, 'stats'), data);
+        await restAddDoc(user, 'stats', data);
       }
       setStatus({ type: 'success', message: editing ? 'Stat modifiée' : 'Stat ajoutée' });
       resetForm();

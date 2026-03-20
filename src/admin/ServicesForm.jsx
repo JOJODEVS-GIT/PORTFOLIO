@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { collection, addDoc, doc, updateDoc, deleteDoc } from 'firebase/firestore';
-import { db } from '../firebase/config';
 import { useSiteData } from '../context/SiteDataContext';
+import { useAuth } from '../context/AuthContext';
+import { restSetDoc, restAddDoc, restDeleteDoc } from '../firebase/firestoreRest';
 import FormField from './components/FormField';
 import ItemList from './components/ItemList';
 import { Plus, Save, X } from 'lucide-react';
@@ -16,6 +16,7 @@ const emptyForm = {
 
 export default function ServicesForm() {
   const { services } = useSiteData();
+  const { user } = useAuth();
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState({ ...emptyForm, order: services.length });
 
@@ -40,7 +41,7 @@ export default function ServicesForm() {
   const handleDelete = async (id) => {
     if (confirm('Supprimer ce service ?')) {
       try {
-        await deleteDoc(doc(db, 'services', id));
+        await restDeleteDoc(user, 'services', id);
         setStatus({ type: 'success', message: 'Service supprimé' });
       } catch (err) {
         console.error(err);
@@ -70,9 +71,9 @@ export default function ServicesForm() {
 
     try {
       if (editing) {
-        await updateDoc(doc(db, 'services', editing), data);
+        await restSetDoc(user, 'services', editing, data);
       } else {
-        await addDoc(collection(db, 'services'), data);
+        await restAddDoc(user, 'services', data);
       }
       setStatus({ type: 'success', message: editing ? 'Service modifié' : 'Service ajouté' });
       resetForm();

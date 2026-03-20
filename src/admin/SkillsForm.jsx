@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { collection, addDoc, doc, updateDoc, deleteDoc } from 'firebase/firestore';
-import { db } from '../firebase/config';
 import { useSiteData } from '../context/SiteDataContext';
+import { useAuth } from '../context/AuthContext';
+import { restSetDoc, restAddDoc, restDeleteDoc } from '../firebase/firestoreRest';
 import FormField from './components/FormField';
 import ItemList from './components/ItemList';
 import { Plus, Save, X } from 'lucide-react';
@@ -15,6 +15,7 @@ const emptyForm = {
 
 export default function SkillsForm() {
   const { skills } = useSiteData();
+  const { user } = useAuth();
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState({ ...emptyForm, order: skills.length });
 
@@ -38,7 +39,7 @@ export default function SkillsForm() {
   const handleDelete = async (id) => {
     if (confirm('Supprimer cette compétence ?')) {
       try {
-        await deleteDoc(doc(db, 'skills', id));
+        await restDeleteDoc(user, 'skills', id);
         setStatus({ type: 'success', message: 'Compétence supprimée' });
       } catch (err) {
         console.error(err);
@@ -55,9 +56,9 @@ export default function SkillsForm() {
 
     try {
       if (editing) {
-        await updateDoc(doc(db, 'skills', editing), data);
+        await restSetDoc(user, 'skills', editing, data);
       } else {
-        await addDoc(collection(db, 'skills'), data);
+        await restAddDoc(user, 'skills', data);
       }
       setStatus({ type: 'success', message: editing ? 'Compétence modifiée' : 'Compétence ajoutée' });
       resetForm();
