@@ -4,19 +4,21 @@ import { useState } from 'react';
 import { useSiteData } from '../context/SiteDataContext';
 
 const fallbackProjects = [
-  { id: 1, title: 'JOJO E-Commerce Mastery', description: 'Plateforme e-commerce complète avec panier, paiement et gestion produits.', gradient: 'from-[#16C79A] to-[#0F3460]', category: 'React', tech: ['TypeScript', 'React', 'Vite'], github: 'https://github.com/JOJODEVS-GIT/JOJO-ECOMMERCE-MASTERY', live: 'https://jojo-ecommerce-mastery.vercel.app' },
-  { id: 2, title: 'MODALLAS', description: 'Site vitrine événementiel — décoration et scénographie élégante.', gradient: 'from-[#0F3460] to-[#16C79A]', category: 'HTML/CSS/JS', tech: ['HTML', 'CSS', 'JavaScript'], github: 'https://github.com/JOJODEVS-GIT/MODALLAS', live: 'https://modallas.vercel.app' },
-  { id: 3, title: 'AFRO-FLASH-BENIN', description: 'Plateforme de services flash et livraison au Bénin.', gradient: 'from-[#16C79A] to-emerald-700', category: 'React', tech: ['Next.js', 'TypeScript'], github: 'https://github.com/JOJODEVS-GIT/AFRO-FLASH-BENIN', live: '#' },
-  { id: 4, title: 'Reality Prompt Engine', description: 'Générateur de prompts IA avec interface intuitive.', gradient: 'from-purple-600 to-[#0F3460]', category: 'HTML/CSS/JS', tech: ['HTML', 'CSS', 'JavaScript'], github: 'https://github.com/JOJODEVS-GIT/REALITY-PROMPT-ENGINE', live: 'https://reality-prompt-engine.vercel.app' },
-  { id: 5, title: 'Mon Produit', description: 'Dashboard de gestion de produits avec statistiques et suivi.', gradient: 'from-[#0F3460] to-blue-800', category: 'HTML/CSS/JS', tech: ['HTML', 'CSS', 'JavaScript'], github: 'https://github.com/JOJODEVS-GIT/MON-PRODUIT', live: 'https://mon-produit.vercel.app' },
-  { id: 6, title: 'QCM JavaScript', description: 'Quiz interactif JavaScript — 60 questions, timer, stats par thème.', gradient: 'from-yellow-600 to-[#16C79A]', category: 'HTML/CSS/JS', tech: ['HTML', 'CSS', 'JavaScript'], github: 'https://github.com/JOJODEVS-GIT/QCM-JAVASCRIPT', live: 'https://qcm-javascript.vercel.app' },
-  { id: 7, title: 'Suivi Chauffeur', description: 'Application de suivi et gestion de chauffeurs en temps réel.', gradient: 'from-[#16C79A] to-teal-700', category: 'HTML/CSS/JS', tech: ['HTML', 'CSS', 'JavaScript'], github: 'https://github.com/JOJODEVS-GIT/SUIVI-CHAUFFEUR', live: 'https://suivi-chauffeur.vercel.app' },
+  { id: 1, title: 'JOJO E-Commerce Mastery', description: 'Plateforme e-commerce complète avec panier, paiement et gestion produits.', imageUrl: '/images/jojo-ecommerce.webp', category: 'React', tech: ['TypeScript', 'React', 'Vite'], github: 'https://github.com/JOJODEVS-GIT/JOJO-ECOMMERCE-MASTERY', live: 'https://jojo-ecommerce-mastery.vercel.app' },
+  { id: 2, title: 'Bloom Event', description: 'Plateforme de réservation d\'événements au Bénin avec recherche et catégories.', imageUrl: '/images/bloom-event.webp', category: 'HTML/CSS/JS', tech: ['HTML', 'CSS', 'Bootstrap', 'JavaScript'], github: 'https://github.com/JOJODEVS-GIT/BLOOM-EVENT', live: 'https://jojodevs-git.github.io/BLOOM-EVENT/' },
+  { id: 3, title: 'MODALLAS', description: 'Site vitrine de mode africaine avec catalogue et panier intégré.', imageUrl: '/images/modallas.webp', category: 'HTML/CSS/JS', tech: ['HTML', 'CSS', 'JavaScript'], github: 'https://github.com/JOJODEVS-GIT/MODALLAS', live: 'https://jojodevs-git.github.io/MODALLAS/' },
+  { id: 4, title: 'Afro Flash Bénin', description: 'Site vitrine d\'actualités et de services au Bénin avec recherche d\'articles.', imageUrl: '/images/afro-flash-benin.webp', category: 'HTML/CSS/JS', tech: ['HTML', 'CSS', 'Bootstrap', 'JavaScript'], github: 'https://github.com/JOJODEVS-GIT/AFRO-FLASH-BENIN-SITE', live: 'https://jojodevs-git.github.io/AFRO-FLASH-BENIN-SITE/' },
+  { id: 5, title: 'Reality Prompt Engine', description: 'Générateur de prompts IA avec interface intuitive et configuration avancée.', imageUrl: '/images/reality-prompt.webp', category: 'HTML/CSS/JS', tech: ['HTML', 'CSS', 'JavaScript'], github: 'https://github.com/JOJODEVS-GIT/REALITY-PROMPT-ENGINE', live: 'https://jojodevs-git.github.io/REALITY-PROMPT-ENGINE/' },
+  { id: 6, title: 'Mon Produit', description: 'Dashboard de gestion de produits avec statistiques, ROI et suivi des bénéfices.', imageUrl: '/images/mon-produit.webp', category: 'HTML/CSS/JS', tech: ['HTML', 'CSS', 'JavaScript'], github: 'https://github.com/JOJODEVS-GIT/MON-PRODUIT', live: 'https://jojodevs-git.github.io/MON-PRODUIT/' },
+  { id: 7, title: 'QCM JavaScript', description: 'Quiz interactif JavaScript — 70 questions, 7 thèmes, timer 20s par question.', imageUrl: '/images/qcm-javascript.webp', category: 'HTML/CSS/JS', tech: ['HTML', 'CSS', 'JavaScript'], github: 'https://github.com/JOJODEVS-GIT/QCM-JAVASCRIPT', live: 'https://jojodevs-git.github.io/QCM-JAVASCRIPT/' },
+  { id: 8, title: 'Suivi Chauffeur', description: 'Application de suivi de paiements chauffeurs en temps réel avec historique.', imageUrl: '/images/suivi-chauffeur.webp', category: 'HTML/CSS/JS', tech: ['HTML', 'CSS', 'JavaScript'], github: 'https://github.com/JOJODEVS-GIT/SUIVI-CHAUFFEUR', live: 'https://jojodevs-git.github.io/SUIVI-CHAUFFEUR/' },
+  { id: 9, title: 'Générateur QR Codes', description: 'Outil desktop de génération de QR codes avec interface graphique Tkinter.', gradient: 'from-purple-600 to-[#0F3460]', category: 'Python', tech: ['Python', 'Tkinter', 'qrcode'], github: 'https://github.com/JOJODEVS-GIT/GENERATEUR-QR-CODES' },
 ];
 
 export default function Projects() {
   const [selectedCategory, setSelectedCategory] = useState('Tous');
-  const { projects } = useSiteData();
-  const projectsData = projects.length ? projects : fallbackProjects;
+  // Always use local data — projects have local screenshot images
+  const projectsData = fallbackProjects;
 
   const categories = ['Tous', ...new Set(projectsData.map((p) => p.category))];
   const filteredProjects = selectedCategory === 'Tous' ? projectsData : projectsData.filter((p) => p.category === selectedCategory);
