@@ -101,27 +101,22 @@ export default function Dashboard() {
 
   const totalItems = stats.length + parcours.length + services.length + projects.length + skills.length;
 
-  const handleSeed = async (reset = false) => {
+  const handleSeed = async () => {
     if (!user) {
       setStatus({ type: 'error', message: 'Vous devez être connecté pour importer des données.' });
       return;
     }
 
-    const msg = reset
-      ? 'Réinitialiser toutes les données ? Les données actuelles seront SUPPRIMÉES et remplacées par les données par défaut.'
-      : 'Importer les données par défaut dans Firestore ?';
-    if (!confirm(msg)) return;
+    if (!confirm('Réinitialiser toutes les données avec les valeurs par défaut ?')) return;
 
     setSeeding(true);
     setStatus(null);
     const colNames = ['stats', 'parcours', 'services', 'projects', 'skills'];
     try {
-      // If reset, clear collections first via REST
-      if (reset) {
-        setStatus({ type: 'info', message: 'Suppression des anciennes données...' });
-        for (const colName of colNames) {
-          await restClearCollection(user, colName);
-        }
+      // ALWAYS clear collections first to avoid duplicates
+      setStatus({ type: 'info', message: 'Suppression des anciennes données...' });
+      for (const colName of colNames) {
+        await restClearCollection(user, colName);
       }
 
       // Seed settings via REST
@@ -196,29 +191,16 @@ export default function Dashboard() {
         </p>
         <div className="flex flex-wrap justify-center gap-3">
           <button
-            onClick={() => handleSeed(false)}
+            onClick={() => handleSeed()}
             disabled={seeding}
             className="btn-primary inline-flex items-center gap-2 disabled:opacity-50"
           >
             {seeding ? (
               <><div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" /> Import en cours...</>
             ) : (
-              <><Database size={18} /> Importer les données</>
+              <><RefreshCw size={18} /> {totalItems === 0 ? 'Importer les données' : 'Réinitialiser les données'}</>
             )}
           </button>
-          {totalItems > 0 && (
-            <button
-              onClick={() => handleSeed(true)}
-              disabled={seeding}
-              className="btn-secondary inline-flex items-center gap-2 disabled:opacity-50 !border-orange-500 !text-orange-400 hover:!bg-orange-500/10"
-            >
-              {seeding ? (
-                <><div className="w-5 h-5 border-2 border-orange-400 border-t-transparent rounded-full animate-spin" /> Réinitialisation...</>
-              ) : (
-                <><RefreshCw size={18} /> Réinitialiser</>
-              )}
-            </button>
-          )}
         </div>
       </div>
 
