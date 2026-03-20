@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useSiteData } from '../context/SiteDataContext';
 import { Link } from 'react-router-dom';
-import { doc, setDoc, collection, addDoc, getDocs, deleteDoc } from 'firebase/firestore';
+import { doc, setDoc, collection, addDoc, getDocs, deleteDoc, writeBatch } from 'firebase/firestore';
 import { db } from '../firebase/config';
 import {
   Settings, Sparkles, BarChart3, User, Route,
@@ -85,10 +85,13 @@ const seedData = {
   ],
 };
 
-async function clearCollection(colName) {
-  const snapshot = await getDocs(collection(db, colName));
-  const deletes = snapshot.docs.map((d) => deleteDoc(d.ref));
-  await Promise.all(deletes);
+async function clearAllCollections(colNames) {
+  const batch = writeBatch(db);
+  for (const colName of colNames) {
+    const snapshot = await getDocs(collection(db, colName));
+    snapshot.docs.forEach((d) => batch.delete(d.ref));
+  }
+  await batch.commit();
 }
 
 export default function Dashboard() {
@@ -114,27 +117,31 @@ export default function Dashboard() {
 
     setSeeding(true);
     setStatus(null);
+    const colNames = ['stats', 'parcours', 'services', 'projects', 'skills'];
     try {
-      // If reset, clear collections first
+      // If reset, clear all collections in one batch
       if (reset) {
-        for (const colName of ['stats', 'parcours', 'services', 'projects', 'skills']) {
-          await clearCollection(colName);
-        }
+        setStatus({ type: 'info', message: 'Suppression des anciennes données...' });
+        await clearAllCollections(colNames);
       }
 
-      // Seed settings (always overwrite)
-      for (const [docId, data] of Object.entries(seedData.settings)) {
-        await setDoc(doc(db, 'settings', docId), data);
-      }
+      // Seed settings in parallel
+      setStatus({ type: 'info', message: 'Import des paramètres...' });
+      await Promise.all(
+        Object.entries(seedData.settings).map(([docId, data]) =>
+          setDoc(doc(db, 'settings', docId), data)
+        )
+      );
 
-      // Seed collections
-      for (const colName of ['stats', 'parcours', 'services', 'projects', 'skills']) {
-        for (const item of seedData[colName]) {
-          await addDoc(collection(db, colName), item);
-        }
-      }
+      // Seed all collections in parallel
+      setStatus({ type: 'info', message: 'Import des collections...' });
+      await Promise.all(
+        colNames.flatMap((colName) =>
+          seedData[colName].map((item) => addDoc(collection(db, colName), item))
+        )
+      );
 
-      setStatus({ type: 'success', message: 'Données importées avec succès ! Le site public se met à jour en temps réel.' });
+      setStatus({ type: 'success', message: 'Données importées avec succès ! Le site se met à jour en temps réel.' });
       setTimeout(() => setStatus(null), 5000);
     } catch (err) {
       console.error('Seed error:', err);
@@ -154,9 +161,11 @@ export default function Dashboard() {
         <div className={`mb-6 p-4 rounded-lg flex items-center gap-2 text-sm ${
           status.type === 'success'
             ? 'bg-[#16C79A]/20 border border-[#16C79A]/50 text-[#16C79A]'
+            : status.type === 'info'
+            ? 'bg-blue-500/20 border border-blue-500/50 text-blue-300'
             : 'bg-red-500/20 border border-red-500/50 text-red-300'
         }`}>
-          {status.type === 'success' ? <CheckCircle size={16} /> : <AlertCircle size={16} />}
+          {status.type === 'success' ? <CheckCircle size={16} /> : status.type === 'info' ? <RefreshCw size={16} className="animate-spin" /> : <AlertCircle size={16} />}
           {status.message}
         </div>
       )}
