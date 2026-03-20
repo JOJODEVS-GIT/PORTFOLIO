@@ -107,18 +107,34 @@ export default function Dashboard() {
 
   const totalItems = stats.length + parcours.length + services.length + projects.length + skills.length;
 
-  // Test Firestore write access
+  // Test Firestore write access with timeout
   const handleTestWrite = async () => {
     setStatus({ type: 'info', message: 'Test de connexion Firestore...' });
+
+    const timeoutMs = 10000;
+    const withTimeout = (promise, label) =>
+      Promise.race([
+        promise,
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error(`TIMEOUT après ${timeoutMs / 1000}s sur: ${label}`)), timeoutMs)
+        ),
+      ]);
+
     try {
+      alert(`User: ${user?.email || 'NULL'}\nUID: ${user?.uid || 'NULL'}\nDB: ${db?.type || typeof db}`);
+
       const testRef = doc(db, 'settings', '_test');
-      await setDoc(testRef, { test: true, timestamp: Date.now() });
-      await deleteDoc(testRef);
-      setStatus({ type: 'success', message: `Firestore OK ! Connecté en tant que ${user?.email || 'inconnu'}` });
-      setTimeout(() => setStatus(null), 5000);
+      alert('Étape 1: Écriture test...');
+      await withTimeout(setDoc(testRef, { test: true }), 'setDoc');
+      alert('Étape 2: Écriture OK ! Suppression...');
+      await withTimeout(deleteDoc(testRef), 'deleteDoc');
+      alert('Étape 3: Tout OK !');
+
+      setStatus({ type: 'success', message: `Firestore OK ! Connecté: ${user?.email}` });
     } catch (err) {
+      alert(`ERREUR: [${err.code || 'no-code'}] ${err.message}`);
       console.error('Test write error:', err);
-      setStatus({ type: 'error', message: `Firestore BLOQUÉ: [${err.code}] ${err.message}` });
+      setStatus({ type: 'error', message: `ERREUR: [${err.code || 'timeout'}] ${err.message}` });
     }
   };
 
