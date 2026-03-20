@@ -107,34 +107,52 @@ export default function Dashboard() {
 
   const totalItems = stats.length + parcours.length + services.length + projects.length + skills.length;
 
-  // Test Firestore write access with timeout
+  // Test Firestore via REST API (bypass SDK)
   const handleTestWrite = async () => {
     setStatus({ type: 'info', message: 'Test de connexion Firestore...' });
 
-    const timeoutMs = 10000;
-    const withTimeout = (promise, label) =>
-      Promise.race([
-        promise,
-        new Promise((_, reject) =>
-          setTimeout(() => reject(new Error(`TIMEOUT après ${timeoutMs / 1000}s sur: ${label}`)), timeoutMs)
-        ),
-      ]);
-
     try {
-      alert(`User: ${user?.email || 'NULL'}\nUID: ${user?.uid || 'NULL'}\nDB: ${db?.type || typeof db}`);
+      // Get the user's auth token
+      const token = await user.getIdToken();
+      alert(`Token obtenu: ${token.substring(0, 20)}...`);
 
-      const testRef = doc(db, 'settings', '_test');
-      alert('Étape 1: Écriture test...');
-      await withTimeout(setDoc(testRef, { test: true }), 'setDoc');
+      const projectId = 'jojo-portfolio';
+      const url = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/settings/_test`;
+
+      // Test WRITE via REST API
+      alert('Étape 1: Écriture REST...');
+      const writeRes = await fetch(url, {
+        method: 'PATCH',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          fields: { test: { booleanValue: true }, time: { stringValue: new Date().toISOString() } }
+        }),
+      });
+
+      if (!writeRes.ok) {
+        const errBody = await writeRes.text();
+        alert(`Écriture ÉCHOUÉE: ${writeRes.status}\n${errBody}`);
+        setStatus({ type: 'error', message: `REST Write: ${writeRes.status} — ${errBody.substring(0, 200)}` });
+        return;
+      }
+
       alert('Étape 2: Écriture OK ! Suppression...');
-      await withTimeout(deleteDoc(testRef), 'deleteDoc');
-      alert('Étape 3: Tout OK !');
 
-      setStatus({ type: 'success', message: `Firestore OK ! Connecté: ${user?.email}` });
+      // Test DELETE via REST API
+      const delRes = await fetch(url, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` },
+      });
+
+      alert(`Étape 3: Suppression ${delRes.ok ? 'OK' : 'ÉCHOUÉE: ' + delRes.status}`);
+      setStatus({ type: 'success', message: `Firestore REST OK ! Connecté: ${user?.email}` });
     } catch (err) {
-      alert(`ERREUR: [${err.code || 'no-code'}] ${err.message}`);
-      console.error('Test write error:', err);
-      setStatus({ type: 'error', message: `ERREUR: [${err.code || 'timeout'}] ${err.message}` });
+      alert(`ERREUR: ${err.message}`);
+      console.error('Test REST error:', err);
+      setStatus({ type: 'error', message: `ERREUR REST: ${err.message}` });
     }
   };
 
