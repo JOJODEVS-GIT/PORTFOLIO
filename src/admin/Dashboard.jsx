@@ -107,6 +107,21 @@ export default function Dashboard() {
 
   const totalItems = stats.length + parcours.length + services.length + projects.length + skills.length;
 
+  // Test Firestore write access
+  const handleTestWrite = async () => {
+    setStatus({ type: 'info', message: 'Test de connexion Firestore...' });
+    try {
+      const testRef = doc(db, 'settings', '_test');
+      await setDoc(testRef, { test: true, timestamp: Date.now() });
+      await deleteDoc(testRef);
+      setStatus({ type: 'success', message: `Firestore OK ! Connecté en tant que ${user?.email || 'inconnu'}` });
+      setTimeout(() => setStatus(null), 5000);
+    } catch (err) {
+      console.error('Test write error:', err);
+      setStatus({ type: 'error', message: `Firestore BLOQUÉ: [${err.code}] ${err.message}` });
+    }
+  };
+
   const handleSeed = async (reset = false) => {
     if (!user) {
       setStatus({ type: 'error', message: 'Vous devez être connecté pour importer des données.' });
@@ -148,7 +163,7 @@ export default function Dashboard() {
       setTimeout(() => setStatus(null), 5000);
     } catch (err) {
       console.error('Seed error:', err);
-      setStatus({ type: 'error', message: 'Erreur: ' + (err.code || '') + ' ' + err.message });
+      setStatus({ type: 'error', message: `Erreur: [${err.code}] ${err.message}` });
     } finally {
       setSeeding(false);
     }
@@ -186,29 +201,36 @@ export default function Dashboard() {
       {/* Seed section */}
       <div className="card mb-8 text-center py-6">
         <Database size={32} className="mx-auto text-[#16C79A] mb-3" />
-        <h3 className="text-lg font-bold mb-2">
-          {totalItems === 0 ? 'Base de données vide' : 'Gestion des données'}
-        </h3>
+        <h3 className="text-lg font-bold mb-2">Gestion des données</h3>
+        <p className="text-[var(--text-secondary)] text-sm mb-1">
+          Connecté : <strong className="text-[#16C79A]">{user?.email || 'Non connecté'}</strong>
+        </p>
         <p className="text-[var(--text-secondary)] text-sm mb-4">
           {totalItems === 0
-            ? 'Importez les données actuelles du portfolio dans Firestore pour commencer'
-            : 'Réinitialisez les données à leurs valeurs par défaut si nécessaire'
+            ? 'Base vide — importez les données pour commencer'
+            : `${totalItems} éléments dans Firestore`
           }
         </p>
         <div className="flex flex-wrap justify-center gap-3">
-          {totalItems === 0 ? (
-            <button
-              onClick={() => handleSeed(false)}
-              disabled={seeding}
-              className="btn-primary inline-flex items-center gap-2 disabled:opacity-50"
-            >
-              {seeding ? (
-                <><div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" /> Import en cours...</>
-              ) : (
-                <><Database size={18} /> Importer les données</>
-              )}
-            </button>
-          ) : (
+          <button
+            onClick={handleTestWrite}
+            disabled={seeding}
+            className="btn-secondary inline-flex items-center gap-2 disabled:opacity-50"
+          >
+            <CheckCircle size={18} /> Tester Firestore
+          </button>
+          <button
+            onClick={() => handleSeed(false)}
+            disabled={seeding}
+            className="btn-primary inline-flex items-center gap-2 disabled:opacity-50"
+          >
+            {seeding ? (
+              <><div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" /> Import en cours...</>
+            ) : (
+              <><Database size={18} /> Importer les données</>
+            )}
+          </button>
+          {totalItems > 0 && (
             <button
               onClick={() => handleSeed(true)}
               disabled={seeding}
@@ -217,7 +239,7 @@ export default function Dashboard() {
               {seeding ? (
                 <><div className="w-5 h-5 border-2 border-orange-400 border-t-transparent rounded-full animate-spin" /> Réinitialisation...</>
               ) : (
-                <><RefreshCw size={18} /> Réinitialiser les données</>
+                <><RefreshCw size={18} /> Réinitialiser</>
               )}
             </button>
           )}
