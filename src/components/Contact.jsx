@@ -4,6 +4,12 @@ import { useState, useRef } from 'react';
 import emailjs from '@emailjs/browser';
 import { useSiteData } from '../context/SiteDataContext';
 
+const EMAILJS_SERVICE_ID = 'service_6md0bcp';
+const EMAILJS_TEMPLATE_ID = 'template_2b39qzl';
+const EMAILJS_PUBLIC_KEY = 'IqoZPdDav9ItaXlVw';
+
+emailjs.init(EMAILJS_PUBLIC_KEY);
+
 export default function Contact() {
   const { contact } = useSiteData();
 
@@ -36,8 +42,8 @@ export default function Contact() {
         return;
       }
       await emailjs.send(
-        import.meta.env.VITE_EMAILJS_SERVICE_ID,
-        import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_ID,
         {
           from_name: formData.from_name,
           from_email: formData.from_email,
@@ -46,7 +52,6 @@ export default function Contact() {
           message: formData.message,
           time: new Date().toLocaleString('fr-FR'),
         },
-        import.meta.env.VITE_EMAILJS_PUBLIC_KEY,
       );
       setStatus({ type: 'success', message: 'Message envoyé avec succès ! Merci !' });
       setFormData({ from_name: '', from_email: '', message: '' });
