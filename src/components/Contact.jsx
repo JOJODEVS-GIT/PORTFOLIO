@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { Mail, Send, Github, MessageCircle, AlertCircle, CheckCircle } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import emailjs from '@emailjs/browser';
 import { useSiteData } from '../context/SiteDataContext';
 
 export default function Contact() {
@@ -12,7 +13,8 @@ export default function Contact() {
   const responseTime = contact?.responseTime || 'Je réponds sous 24h. N\'hésitez pas !';
   const availabilityMessage = contact?.availabilityMessage || 'Disponible pour de nouvelles collaborations et projets freelance.';
 
-  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+  const formRef = useRef();
+  const [formData, setFormData] = useState({ from_name: '', from_email: '', message: '' });
   const [status, setStatus] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -22,25 +24,28 @@ export default function Contact() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      if (!formData.name || !formData.email || !formData.message) {
+      if (!formData.from_name || !formData.from_email || !formData.message) {
         setStatus({ type: 'error', message: 'Veuillez remplir tous les champs requis' });
         setIsLoading(false);
         return;
       }
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(formData.email)) {
+      if (!emailRegex.test(formData.from_email)) {
         setStatus({ type: 'error', message: 'Email invalide' });
         setIsLoading(false);
         return;
       }
-      const subject = encodeURIComponent(`Portfolio Contact: ${formData.name}`);
-      const body = encodeURIComponent(`Nom: ${formData.name}\nEmail: ${formData.email}\n\n${formData.message}`);
-      window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
-      setStatus({ type: 'success', message: 'Votre client email va s\'ouvrir. Merci !' });
-      setFormData({ name: '', email: '', message: '' });
+      await emailjs.sendForm(
+        import.meta.env.VITE_EMAILJS_SERVICE_ID,
+        import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+        formRef.current,
+        import.meta.env.VITE_EMAILJS_PUBLIC_KEY,
+      );
+      setStatus({ type: 'success', message: 'Message envoyé avec succès ! Merci !' });
+      setFormData({ from_name: '', from_email: '', message: '' });
       setTimeout(() => setStatus(null), 5000);
     } catch {
-      setStatus({ type: 'error', message: `Erreur. Envoyez un email directement à ${email}` });
+      setStatus({ type: 'error', message: `Erreur d'envoi. Contactez-moi directement à ${email}` });
     } finally {
       setIsLoading(false);
     }
@@ -76,15 +81,15 @@ export default function Contact() {
               </motion.div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label htmlFor="name" className="block text-sm font-semibold mb-2" style={{ color: 'var(--text-secondary)' }}>Nom *</label>
-                <input type="text" id="name" name="name" value={formData.name} onChange={handleChange}
+                <label htmlFor="from_name" className="block text-sm font-semibold mb-2" style={{ color: 'var(--text-secondary)' }}>Nom *</label>
+                <input type="text" id="from_name" name="from_name" value={formData.from_name} onChange={handleChange}
                   className={inputClass} style={{ backgroundColor: 'var(--bg-input)', color: 'var(--text-primary)' }} placeholder="Votre nom" required />
               </div>
               <div>
-                <label htmlFor="email" className="block text-sm font-semibold mb-2" style={{ color: 'var(--text-secondary)' }}>Email *</label>
-                <input type="email" id="email" name="email" value={formData.email} onChange={handleChange}
+                <label htmlFor="from_email" className="block text-sm font-semibold mb-2" style={{ color: 'var(--text-secondary)' }}>Email *</label>
+                <input type="email" id="from_email" name="from_email" value={formData.from_email} onChange={handleChange}
                   className={inputClass} style={{ backgroundColor: 'var(--bg-input)', color: 'var(--text-primary)' }} placeholder="votre@email.com" required />
               </div>
               <div>
