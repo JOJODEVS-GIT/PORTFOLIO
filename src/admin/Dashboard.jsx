@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useSiteData } from '../context/SiteDataContext';
 import { Link } from 'react-router-dom';
-import { doc, setDoc, collection, addDoc, getDocs, deleteDoc, writeBatch } from 'firebase/firestore';
+import { doc, setDoc, collection, addDoc, getDocs, deleteDoc } from 'firebase/firestore';
 import { db } from '../firebase/config';
+import { useAuth } from '../context/AuthContext';
 import {
   Settings, Sparkles, BarChart3, User, Route,
   Briefcase, FolderGit2, Code2, Mail, Database, CheckCircle, AlertCircle, RefreshCw
@@ -85,17 +86,14 @@ const seedData = {
   ],
 };
 
-async function clearAllCollections(colNames) {
-  const batch = writeBatch(db);
-  for (const colName of colNames) {
-    const snapshot = await getDocs(collection(db, colName));
-    snapshot.docs.forEach((d) => batch.delete(d.ref));
-  }
-  await batch.commit();
+async function clearCollection(colName) {
+  const snapshot = await getDocs(collection(db, colName));
+  await Promise.all(snapshot.docs.map((d) => deleteDoc(d.ref)));
 }
 
 export default function Dashboard() {
   const { stats, parcours, services, projects, skills } = useSiteData();
+  const { user } = useAuth();
   const [seeding, setSeeding] = useState(false);
   const [status, setStatus] = useState(null);
 
@@ -110,6 +108,11 @@ export default function Dashboard() {
   const totalItems = stats.length + parcours.length + services.length + projects.length + skills.length;
 
   const handleSeed = async (reset = false) => {
+    if (!user) {
+      setStatus({ type: 'error', message: 'Vous devez être connecté pour importer des données.' });
+      return;
+    }
+
     const msg = reset
       ? 'Réinitialiser toutes les données ? Les données actuelles seront SUPPRIMÉES et remplacées par les données par défaut.'
       : 'Importer les données par défaut dans Firestore ?';
@@ -119,33 +122,33 @@ export default function Dashboard() {
     setStatus(null);
     const colNames = ['stats', 'parcours', 'services', 'projects', 'skills'];
     try {
-      // If reset, clear all collections in one batch
+      // If reset, clear collections first
       if (reset) {
         setStatus({ type: 'info', message: 'Suppression des anciennes données...' });
-        await clearAllCollections(colNames);
+        for (const colName of colNames) {
+          await clearCollection(colName);
+        }
       }
 
-      // Seed settings in parallel
+      // Seed settings one by one (4 docs only)
       setStatus({ type: 'info', message: 'Import des paramètres...' });
-      await Promise.all(
-        Object.entries(seedData.settings).map(([docId, data]) =>
-          setDoc(doc(db, 'settings', docId), data)
-        )
-      );
+      for (const [docId, data] of Object.entries(seedData.settings)) {
+        await setDoc(doc(db, 'settings', docId), data);
+      }
 
-      // Seed all collections in parallel
+      // Seed collections one by one
       setStatus({ type: 'info', message: 'Import des collections...' });
-      await Promise.all(
-        colNames.flatMap((colName) =>
-          seedData[colName].map((item) => addDoc(collection(db, colName), item))
-        )
-      );
+      for (const colName of colNames) {
+        for (const item of seedData[colName]) {
+          await addDoc(collection(db, colName), item);
+        }
+      }
 
       setStatus({ type: 'success', message: 'Données importées avec succès ! Le site se met à jour en temps réel.' });
       setTimeout(() => setStatus(null), 5000);
     } catch (err) {
       console.error('Seed error:', err);
-      setStatus({ type: 'error', message: 'Erreur: ' + err.message });
+      setStatus({ type: 'error', message: 'Erreur: ' + (err.code || '') + ' ' + err.message });
     } finally {
       setSeeding(false);
     }
