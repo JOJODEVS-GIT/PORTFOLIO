@@ -1,7 +1,9 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { Github, ExternalLink } from 'lucide-react';
+import { Github, ExternalLink, ChevronDown } from 'lucide-react';
 import { useState } from 'react';
 import { useSiteData } from '../context/SiteDataContext';
+
+const VISIBLE_COUNT = 6;
 
 const fallbackProjects = [
   { id: 1, title: 'JOJO E-Commerce Mastery', description: 'Plateforme e-commerce complète avec panier, paiement et gestion produits.', imageUrl: '/images/jojo-ecommerce.webp', category: 'React', tech: ['TypeScript', 'React', 'Vite'], github: 'https://github.com/JOJODEVS-GIT/JOJO-ECOMMERCE-MASTERY', live: 'https://jojo-ecommerce-mastery.vercel.app' },
@@ -17,11 +19,14 @@ const fallbackProjects = [
 
 export default function Projects() {
   const [selectedCategory, setSelectedCategory] = useState('Tous');
+  const [showAll, setShowAll] = useState(false);
   // Always use local data — projects have local screenshot images
   const projectsData = fallbackProjects;
 
   const categories = ['Tous', ...new Set(projectsData.map((p) => p.category))];
-  const filteredProjects = selectedCategory === 'Tous' ? projectsData : projectsData.filter((p) => p.category === selectedCategory);
+  const allFiltered = selectedCategory === 'Tous' ? projectsData : projectsData.filter((p) => p.category === selectedCategory);
+  const filteredProjects = showAll ? allFiltered : allFiltered.slice(0, VISIBLE_COUNT);
+  const hasMore = allFiltered.length > VISIBLE_COUNT;
 
   return (
     <section id="projects" className="py-20 px-4 sm:px-6 lg:px-8" style={{ backgroundColor: 'var(--bg-accent)' }}>
@@ -35,7 +40,7 @@ export default function Projects() {
           {categories.map((category) => (
             <button
               key={category}
-              onClick={() => setSelectedCategory(category)}
+              onClick={() => { setSelectedCategory(category); setShowAll(false); }}
               className={`px-6 py-2 rounded-lg font-semibold transition-all duration-300 ${
                 selectedCategory === category ? 'text-white shadow-lg' : 'border'
               }`}
@@ -106,6 +111,22 @@ export default function Projects() {
             ))}
           </motion.div>
         </AnimatePresence>
+
+        {hasMore && !showAll && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="flex justify-center mt-10"
+          >
+            <button
+              onClick={() => setShowAll(true)}
+              className="flex items-center gap-2 px-8 py-3 rounded-lg font-semibold transition-all duration-300 hover:scale-105 text-white shadow-lg"
+              style={{ background: 'linear-gradient(135deg, #16C79A, var(--accent-dark))', boxShadow: '0 4px 15px rgba(22,199,154,0.3)' }}
+            >
+              Voir plus <ChevronDown size={18} />
+            </button>
+          </motion.div>
+        )}
       </div>
     </section>
   );
