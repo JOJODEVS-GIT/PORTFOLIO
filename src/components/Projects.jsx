@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { Github, ExternalLink, ChevronDown } from 'lucide-react';
+import { Github, ExternalLink, ChevronDown, ChevronUp } from 'lucide-react';
 import { useState } from 'react';
 import { useSiteData } from '../context/SiteDataContext';
 
@@ -112,18 +112,18 @@ export default function Projects() {
           </motion.div>
         </AnimatePresence>
 
-        {hasMore && !showAll && (
+        {hasMore && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             className="flex justify-center mt-10"
           >
             <button
-              onClick={() => setShowAll(true)}
+              onClick={() => setShowAll(!showAll)}
               className="flex items-center gap-2 px-8 py-3 rounded-lg font-semibold transition-all duration-300 hover:scale-105 text-white shadow-lg"
               style={{ background: 'linear-gradient(135deg, #16C79A, var(--accent-dark))', boxShadow: '0 4px 15px rgba(22,199,154,0.3)' }}
             >
-              Voir plus <ChevronDown size={18} />
+              {showAll ? <>Voir moins <ChevronUp size={18} /></> : <>Voir plus <ChevronDown size={18} /></>}
             </button>
           </motion.div>
         )}
