@@ -132,15 +132,15 @@ export default function Projects() {
         </div>
 
         {/* Carousel container */}
-        <div className="relative">
+        <div className="relative md:px-16">
           {/* Arrow left */}
           {totalPages > 1 && currentPage > 0 && (
             <button
               onClick={() => paginate(-1)}
-              className="hidden md:flex absolute -left-5 top-1/2 -translate-y-1/2 z-10 w-10 h-10 items-center justify-center rounded-full text-white shadow-lg transition-transform hover:scale-110"
+              className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 z-10 w-11 h-11 items-center justify-center rounded-full text-white shadow-lg transition-transform hover:scale-110"
               style={{ background: 'linear-gradient(135deg, #16C79A, var(--accent-dark))' }}
             >
-              <ChevronLeft size={20} />
+              <ChevronLeft size={22} />
             </button>
           )}
 
@@ -148,10 +148,10 @@ export default function Projects() {
           {totalPages > 1 && currentPage < totalPages - 1 && (
             <button
               onClick={() => paginate(1)}
-              className="hidden md:flex absolute -right-5 top-1/2 -translate-y-1/2 z-10 w-10 h-10 items-center justify-center rounded-full text-white shadow-lg transition-transform hover:scale-110"
+              className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 z-10 w-11 h-11 items-center justify-center rounded-full text-white shadow-lg transition-transform hover:scale-110"
               style={{ background: 'linear-gradient(135deg, #16C79A, var(--accent-dark))' }}
             >
-              <ChevronRight size={20} />
+              <ChevronRight size={22} />
             </button>
           )}
 
