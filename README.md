@@ -12,7 +12,7 @@ Portfolio personnel développeur présentant mes projets, compétences et servic
 
 ## 🚀 Démo en ligne
 
-👉 [jojo-portfolio.vercel.app](https://jojo-portfolio.vercel.app)
+👉 [jojo-devs.vercel.app](https://jojo-devs.vercel.app)
 
 ## 📁 Structure du projet
 
