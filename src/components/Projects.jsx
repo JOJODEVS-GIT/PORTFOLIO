@@ -64,14 +64,14 @@ function ProjectCard({ project, idx }) {
           <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-all duration-300" />
         </div>
       ) : (
-        <div className={`w-full h-44 bg-gradient-to-br ${project.gradient || 'from-[#16C79A] to-[#0F3460]'} rounded-lg mb-4 relative overflow-hidden flex items-center justify-center`}>
+        <div className={`w-full h-44 bg-gradient-to-br ${project.gradient || 'from-[color:var(--accent)] to-[#0F3460]'} rounded-lg mb-4 relative overflow-hidden flex items-center justify-center`}>
           <span className="text-white/80 text-3xl font-bold tracking-wider">{project.title.split(' ')[0]}</span>
           <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-all duration-300" />
         </div>
       )}
 
       <Link to={`/projet/${project.id}`} className="block">
-        <h3 className="text-lg font-display font-semibold mb-2 group-hover:text-[#16C79A] transition-colors flex items-center gap-1.5">
+        <h3 className="text-lg font-display font-semibold mb-2 group-hover:text-[color:var(--accent)] transition-colors flex items-center gap-1.5">
           {project.title}
           <ArrowUpRight size={16} className="opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: 'var(--accent)' }} />
         </h3>
@@ -87,13 +87,13 @@ function ProjectCard({ project, idx }) {
       <div className="flex gap-4 pt-4 border-t" style={{ borderColor: 'var(--border-card)' }}>
         {project.github && (
           <a href={project.github} target="_blank" rel="noopener noreferrer"
-            className="flex items-center gap-2 text-sm hover:text-[#16C79A] transition-colors" style={{ color: 'var(--text-secondary)' }}>
+            className="flex items-center gap-2 text-sm hover:text-[color:var(--accent)] transition-colors" style={{ color: 'var(--text-secondary)' }}>
             <Github size={16} /> Code
           </a>
         )}
         {project.live && project.live !== '#' && (
           <a href={project.live} target="_blank" rel="noopener noreferrer"
-            className="flex items-center gap-2 text-sm hover:text-[#16C79A] transition-colors ml-auto" style={{ color: 'var(--text-secondary)' }}>
+            className="flex items-center gap-2 text-sm hover:text-[color:var(--accent)] transition-colors ml-auto" style={{ color: 'var(--text-secondary)' }}>
             <ExternalLink size={16} /> Voir live
           </a>
         )}
@@ -232,9 +232,9 @@ export default function Projects() {
                 onClick={() => setCurrentPage(idx)}
                 className="w-3 h-3 rounded-full transition-all duration-300"
                 style={{
-                  background: idx === currentPage ? '#16C79A' : 'var(--border-card)',
+                  background: idx === currentPage ? 'var(--accent)' : 'var(--border-card)',
                   transform: idx === currentPage ? 'scale(1.3)' : 'scale(1)',
-                  boxShadow: idx === currentPage ? '0 0 8px rgba(22,199,154,0.5)' : 'none',
+                  boxShadow: idx === currentPage ? '0 0 8px var(--accent-a50)' : 'none',
                 }}
               />
             ))}

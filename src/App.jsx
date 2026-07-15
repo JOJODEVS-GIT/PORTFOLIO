@@ -2,6 +2,7 @@ import { Routes, Route, Link } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
 import PortfolioPage from './components/PortfolioPage';
 import LoadingSpinner from './components/LoadingSpinner';
+import ThemeApplier from './components/ThemeApplier';
 
 const ProjectDetail = lazy(() => import('./components/ProjectDetail'));
 
@@ -35,7 +36,9 @@ function NotFound() {
 
 function App() {
   return (
-    <Suspense fallback={<LoadingSpinner />}>
+    <>
+      <ThemeApplier />
+      <Suspense fallback={<LoadingSpinner />}>
       <Routes>
         <Route path="/" element={<PortfolioPage />} />
         <Route path="/projet/:id" element={<ProjectDetail />} />
@@ -62,7 +65,8 @@ function App() {
         </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>
-    </Suspense>
+      </Suspense>
+    </>
   );
 }
 

@@ -12,13 +12,24 @@ export function ThemeProvider({ children }) {
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('portfolio-theme', theme);
   }, [theme]);
 
-  const toggleTheme = () => setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
+  // On ne mémorise le thème que si le visiteur le change lui-même
+  const toggleTheme = () => setTheme((prev) => {
+    const next = prev === 'dark' ? 'light' : 'dark';
+    if (typeof window !== 'undefined') localStorage.setItem('portfolio-theme', next);
+    return next;
+  });
+
+  // Applique le thème par défaut défini dans l'admin, sauf si le visiteur a déjà choisi
+  const applyDefaultTheme = (t) => {
+    if (t && typeof window !== 'undefined' && !localStorage.getItem('portfolio-theme')) {
+      setTheme(t);
+    }
+  };
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <ThemeContext.Provider value={{ theme, toggleTheme, applyDefaultTheme }}>
       {children}
     </ThemeContext.Provider>
   );

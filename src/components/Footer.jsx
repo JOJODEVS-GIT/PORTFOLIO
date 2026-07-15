@@ -23,7 +23,7 @@ export default function Footer() {
           <div className="text-center md:text-left">
             <h2 className="text-2xl font-bold mb-1">
               <span style={{ color: 'var(--text-primary)' }}>{logoText}</span>
-              <span className="text-[#16C79A]">{logoDot}</span>
+              <span className="text-[color:var(--accent)]">{logoDot}</span>
             </h2>
             <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>Développeur Web Full Stack & Automatisation</p>
             <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>Cotonou, Bénin</p>
@@ -32,7 +32,7 @@ export default function Footer() {
           <nav aria-label="Footer" className="flex flex-wrap justify-center gap-4 sm:gap-6 text-sm">
             {['Accueil:#hero', 'À propos:#about', 'Services:#services', 'Parcours:#parcours', 'Projets:#projects', 'Contact:#contact'].map((item) => {
               const [label, href] = item.split(':');
-              return <a key={href} href={href} className="hover:text-[#16C79A] transition-colors" style={{ color: 'var(--text-secondary)' }}>{label}</a>;
+              return <a key={href} href={href} className="hover:text-[color:var(--accent)] transition-colors" style={{ color: 'var(--text-secondary)' }}>{label}</a>;
             })}
           </nav>
 
@@ -43,7 +43,7 @@ export default function Footer() {
                 <a key={idx} href={link.href}
                   target={link.href.startsWith('http') ? '_blank' : undefined}
                   rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                  className="p-2 rounded-lg border border-[#16C79A]/20 transition-all glow-effect hover:bg-[#16C79A]/20"
+                  className="p-2 rounded-lg border border-[color:var(--accent-a20)] transition-all glow-effect hover:bg-[color:var(--accent-a20)]"
                   style={{ background: 'var(--bg-card)' }} aria-label={link.label}>
                   <IconComponent size={18} />
                 </a>

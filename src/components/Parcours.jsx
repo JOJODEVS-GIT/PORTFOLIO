@@ -10,7 +10,7 @@ const fallbackParcours = [
 
 const typeConfig = {
   formation: { icon: GraduationCap, label: 'Formation', hex: '#6b7c88' },
-  experience: { icon: Briefcase, label: 'Expérience', hex: '#17c99b' },
+  experience: { icon: Briefcase, label: 'Expérience', hex: 'var(--accent)' },
   certification: { icon: Award, label: 'Certification', hex: '#c9a96e' },
 };
 
@@ -44,7 +44,7 @@ export default function Parcours() {
         </motion.div>
 
         <div className="relative">
-          <div className="absolute left-4 md:left-1/2 md:-translate-x-px top-0 bottom-0 w-px bg-gradient-to-b from-[#17c99b]/40 via-[#17c99b]/15 to-transparent" />
+          <div className="absolute left-4 md:left-1/2 md:-translate-x-px top-0 bottom-0 w-px bg-gradient-to-b from-[color:var(--accent-a40)] via-[color:var(--accent-a15)] to-transparent" />
 
           {parcoursData.map((item, idx) => {
             const config = typeConfig[item.type] || typeConfig.experience;

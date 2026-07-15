@@ -74,7 +74,7 @@ export default function About() {
                   loading="lazy"
                 />
                 {/* Teinte accent qui s'efface au survol (signature) */}
-                <div className="absolute inset-0 bg-[#17c99b]/25 group-hover:bg-transparent transition-colors duration-500" />
+                <div className="absolute inset-0 bg-[color:var(--accent-a25)] group-hover:bg-transparent transition-colors duration-500" />
               </div>
             </div>
           </motion.div>
@@ -86,26 +86,26 @@ export default function About() {
 
             <p className="text-lg" style={{ color: 'var(--text-muted)' }}>{tagline}</p>
 
-            <div className="pt-6 border-t border-[#16C79A]/20">
+            <div className="pt-6 border-t border-[color:var(--accent-a20)]">
               <h3 className="text-lg font-semibold mb-4">Me retrouver :</h3>
               <div className="flex gap-4">
                 {socialLinks.github && (
                   <a href={socialLinks.github} target="_blank" rel="noopener noreferrer"
-                    className="p-3 rounded-lg border border-[#16C79A]/20 transition-all glow-effect hover:bg-[#16C79A]/20"
+                    className="p-3 rounded-lg border border-[color:var(--accent-a20)] transition-all glow-effect hover:bg-[color:var(--accent-a20)]"
                     style={{ background: 'var(--bg-card)' }} aria-label="GitHub">
                     <Github size={24} />
                   </a>
                 )}
                 {socialLinks.whatsapp && (
                   <a href={socialLinks.whatsapp} target="_blank" rel="noopener noreferrer"
-                    className="p-3 rounded-lg border border-[#16C79A]/20 transition-all glow-effect hover:bg-[#16C79A]/20"
+                    className="p-3 rounded-lg border border-[color:var(--accent-a20)] transition-all glow-effect hover:bg-[color:var(--accent-a20)]"
                     style={{ background: 'var(--bg-card)' }} aria-label="WhatsApp">
                     <MessageCircle size={24} />
                   </a>
                 )}
                 {socialLinks.email && (
                   <a href={socialLinks.email.startsWith('mailto:') ? socialLinks.email : `mailto:${socialLinks.email}`}
-                    className="p-3 rounded-lg border border-[#16C79A]/20 transition-all glow-effect hover:bg-[#16C79A]/20"
+                    className="p-3 rounded-lg border border-[color:var(--accent-a20)] transition-all glow-effect hover:bg-[color:var(--accent-a20)]"
                     style={{ background: 'var(--bg-card)' }} aria-label="Email">
                     <Mail size={24} />
                   </a>

@@ -3,7 +3,7 @@ import { getIcon } from '../utils/iconMap';
 import { useSiteData } from '../context/SiteDataContext';
 
 const fallbackSkills = [
-  { name: 'React / Next.js', iconName: 'Sparkles', color: 'text-[#16C79A]' },
+  { name: 'React / Next.js', iconName: 'Sparkles', color: 'text-[color:var(--accent)]' },
   { name: 'WordPress', iconName: 'Globe', color: 'text-blue-400' },
   { name: 'Python', iconName: 'Terminal', color: 'text-yellow-400' },
   { name: 'TypeScript', iconName: 'Code2', color: 'text-blue-300' },

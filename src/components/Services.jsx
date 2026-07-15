@@ -35,8 +35,8 @@ export default function Services() {
             const IconComponent = getIcon(service.iconName, 'Briefcase');
             return (
               <motion.div key={service.id || idx} variants={itemVariants} className="card group">
-                <div className="w-14 h-14 mb-6 rounded-xl bg-[#16C79A]/10 border border-[#16C79A]/20 flex items-center justify-center group-hover:bg-[#16C79A]/20 transition-colors">
-                  <IconComponent size={28} className="text-[#16C79A]" />
+                <div className="w-14 h-14 mb-6 rounded-xl bg-[color:var(--accent-a10)] border border-[color:var(--accent-a20)] flex items-center justify-center group-hover:bg-[color:var(--accent-a20)] transition-colors">
+                  <IconComponent size={28} className="text-[color:var(--accent)]" />
                 </div>
                 <h3 className="text-xl font-display font-semibold mb-3">{service.title}</h3>
                 <p className="mb-6 text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>{service.description}</p>

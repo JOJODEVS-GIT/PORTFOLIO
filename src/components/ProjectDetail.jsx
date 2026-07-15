@@ -25,7 +25,7 @@ export default function ProjectDetail() {
         <div className="max-w-5xl mx-auto px-6 sm:px-8 h-16 flex items-center justify-between">
           <Link to="/" className="text-xl font-display font-semibold tracking-tight">
             <span style={{ color: 'var(--text-primary)' }}>{logoText}</span>
-            <span className="text-[#16C79A]">{logoDot}</span>
+            <span className="text-[color:var(--accent)]">{logoDot}</span>
           </Link>
           <Link to="/#projects" className="nav-link flex items-center gap-2">
             <ArrowLeft size={15} /> Retour aux projets
@@ -59,7 +59,7 @@ export default function ProjectDetail() {
                 <img src={project.imageUrl} alt={project.title} className="w-full object-cover" loading="lazy" />
               </div>
             ) : (
-              <div className={`w-full h-72 rounded-2xl mb-14 bg-gradient-to-br ${project.gradient || 'from-[#16C79A] to-[#0F3460]'} flex items-center justify-center`}>
+              <div className={`w-full h-72 rounded-2xl mb-14 bg-gradient-to-br ${project.gradient || 'from-[color:var(--accent)] to-[#0F3460]'} flex items-center justify-center`}>
                 <span className="font-display text-white/80 text-5xl">{project.title.split(' ')[0]}</span>
               </div>
             )}

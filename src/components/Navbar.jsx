@@ -66,7 +66,7 @@ export default function Navbar() {
       }`}
       style={isScrolled ? {
         backgroundColor: 'var(--nav-bg)',
-        borderColor: 'rgba(22,199,154,0.1)',
+        borderColor: 'var(--accent-a10)',
       } : {}}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -76,7 +76,7 @@ export default function Navbar() {
             className="text-2xl font-display font-semibold animate-fade-in tracking-tight"
           >
             <span style={{ color: 'var(--text-primary)' }}>{logoText}</span>
-            <span className="text-[#16C79A]">{logoDot}</span>
+            <span className="text-[color:var(--accent)]">{logoDot}</span>
           </a>
 
           <div className="hidden md:flex items-center gap-8">

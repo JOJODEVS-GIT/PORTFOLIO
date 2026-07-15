@@ -64,7 +64,7 @@ export default function Contact() {
     }
   };
 
-  const inputClass = "w-full px-4 py-3 rounded-lg border border-[color:var(--border-card)] focus:outline-none transition-colors focus:border-[#17c99b]";
+  const inputClass = "w-full px-4 py-3 rounded-lg border border-[color:var(--border-card)] focus:outline-none transition-colors focus:border-[color:var(--accent)]";
 
   return (
     <section id="contact" className="py-20 px-4 sm:px-6 lg:px-8" style={{ backgroundColor: 'var(--bg-accent)' }}>
@@ -89,7 +89,7 @@ export default function Contact() {
             {status && (
               <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
                 className={`mb-6 p-4 rounded-lg flex items-center gap-3 ${
-                  status.type === 'success' ? 'bg-[#16C79A]/20 border border-[#16C79A]/50 text-[#16C79A]' : 'bg-red-500/20 border border-red-500/50 text-red-300'
+                  status.type === 'success' ? 'bg-[color:var(--accent-a20)] border border-[color:var(--accent-a50)] text-[color:var(--accent)]' : 'bg-red-500/20 border border-red-500/50 text-red-300'
                 }`}>
                 {status.type === 'success' ? <CheckCircle size={20} /> : <AlertCircle size={20} />}
                 {status.message}
@@ -126,13 +126,13 @@ export default function Contact() {
             className="space-y-8">
             <div className="flex gap-4">
               <div className="flex-shrink-0">
-                <div className="flex items-center justify-center h-12 w-12 rounded-lg bg-[#16C79A]/10 border border-[#16C79A]/20">
-                  <Mail className="text-[#16C79A]" size={24} />
+                <div className="flex items-center justify-center h-12 w-12 rounded-lg bg-[color:var(--accent-a10)] border border-[color:var(--accent-a20)]">
+                  <Mail className="text-[color:var(--accent)]" size={24} />
                 </div>
               </div>
               <div>
                 <h3 className="text-lg font-semibold mb-1">Email</h3>
-                <a href={`mailto:${email}`} className="hover:text-[#16C79A] transition-colors" style={{ color: 'var(--text-secondary)' }}>{email}</a>
+                <a href={`mailto:${email}`} className="hover:text-[color:var(--accent)] transition-colors" style={{ color: 'var(--text-secondary)' }}>{email}</a>
               </div>
             </div>
 
@@ -140,19 +140,19 @@ export default function Contact() {
               <h3 className="text-lg font-semibold mb-4">Retrouvez-moi</h3>
               <div className="flex gap-4">
                 <a href={github} target="_blank" rel="noopener noreferrer"
-                  className="flex items-center justify-center w-12 h-12 rounded-lg border border-[#16C79A]/20 hover:border-[#16C79A] hover:bg-[#16C79A]/10 transition-all"
+                  className="flex items-center justify-center w-12 h-12 rounded-lg border border-[color:var(--accent-a20)] hover:border-[color:var(--accent)] hover:bg-[color:var(--accent-a10)] transition-all"
                   style={{ background: 'var(--bg-card)' }} aria-label="GitHub">
                   <Github size={20} />
                 </a>
                 <a href={whatsapp} target="_blank" rel="noopener noreferrer"
-                  className="flex items-center justify-center w-12 h-12 rounded-lg border border-[#16C79A]/20 hover:border-[#16C79A] hover:bg-[#16C79A]/10 transition-all"
+                  className="flex items-center justify-center w-12 h-12 rounded-lg border border-[color:var(--accent-a20)] hover:border-[color:var(--accent)] hover:bg-[color:var(--accent-a10)] transition-all"
                   style={{ background: 'var(--bg-card)' }} aria-label="WhatsApp">
                   <MessageCircle size={20} />
                 </a>
               </div>
             </div>
 
-            <div className="p-4 bg-[#16C79A]/10 border border-[#16C79A]/20 rounded-lg">
+            <div className="p-4 bg-[color:var(--accent-a10)] border border-[color:var(--accent-a20)] rounded-lg">
               <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
                 <strong>Temps de réponse :</strong> {responseTime}
               </p>

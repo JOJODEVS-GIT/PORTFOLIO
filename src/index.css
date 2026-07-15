@@ -32,11 +32,19 @@
   --border-card-hover: rgba(22, 199, 154, 0.35);
   --border-hair: rgba(255, 255, 255, 0.06);
 
-  /* Accent joyau */
+  /* Accent joyau (pilotable depuis l'admin via ThemeApplier) */
   --accent: #17c99b;
   --accent-bright: #3ff0c0;
   --accent-dark: #0e8f6f;
   --accent-glow: rgba(23, 201, 155, 0.14);
+
+  /* Nuances d'accent dérivées automatiquement de --accent (suivent la couleur choisie) */
+  --accent-a10: color-mix(in srgb, var(--accent) 10%, transparent);
+  --accent-a15: color-mix(in srgb, var(--accent) 15%, transparent);
+  --accent-a20: color-mix(in srgb, var(--accent) 20%, transparent);
+  --accent-a25: color-mix(in srgb, var(--accent) 25%, transparent);
+  --accent-a40: color-mix(in srgb, var(--accent) 40%, transparent);
+  --accent-a50: color-mix(in srgb, var(--accent) 50%, transparent);
 
   --nav-bg: rgba(10, 14, 17, 0.72);
   --hero-gradient: radial-gradient(120% 120% at 15% 10%, rgba(23,201,155,0.10) 0%, rgba(10,14,17,0) 45%), var(--bg-primary);
