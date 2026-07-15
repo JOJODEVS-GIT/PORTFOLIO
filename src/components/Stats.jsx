@@ -72,13 +72,19 @@ export default function Stats() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: idx * 0.1 }}
               viewport={{ once: true }}
-              className="text-center"
+              className={`text-center px-2 md:px-6 ${idx > 0 ? 'md:border-l' : ''}`}
+              style={{ borderColor: 'var(--border-hair)' }}
             >
-              <div className="text-4xl md:text-5xl font-bold accent-gradient mb-2">
+              <div className="font-display accent-gradient text-5xl md:text-6xl leading-none mb-3">
                 <CountUp target={stat.number} />
                 {stat.suffix}
               </div>
-              <p className="font-semibold text-sm" style={{ color: 'var(--text-secondary)' }}>{stat.label}</p>
+              <p
+                className="text-[0.68rem] md:text-xs uppercase"
+                style={{ fontFamily: 'var(--font-mono)', letterSpacing: '0.14em', color: 'var(--text-muted)' }}
+              >
+                {stat.label}
+              </p>
             </motion.div>
           ))}
         </motion.div>

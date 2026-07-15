@@ -34,15 +34,17 @@ export default function About() {
   return (
     <section id="about" className="py-20 px-4 sm:px-6 lg:px-8" style={{ backgroundColor: 'var(--bg-accent)' }}>
       <div className="max-w-6xl mx-auto">
-        <motion.h2
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
-          className="text-4xl md:text-5xl font-bold mb-16 text-center"
+          className="section-heading"
         >
-          À <span className="accent-gradient">propos</span> de moi
-        </motion.h2>
+          <span className="idx text-base sm:text-lg">01.</span>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl">À propos</h2>
+          <span className="rule" />
+        </motion.div>
 
         <motion.div
           className="grid md:grid-cols-2 gap-12 items-center"
@@ -51,30 +53,28 @@ export default function About() {
           whileInView="visible"
           viewport={{ once: true }}
         >
-          <motion.div variants={itemVariants} className="flex justify-center">
-            <div className="relative w-72 h-72 md:w-96 md:h-96">
-              {/* Glow background */}
-              <div className="absolute -inset-4 bg-gradient-to-r from-[#16C79A] to-[#0F3460] rounded-3xl blur-2xl opacity-25 animate-pulse" />
-              {/* Rotating border ring */}
+          <motion.div variants={itemVariants} className="flex justify-center md:justify-start">
+            <div className="relative w-72 h-80 md:w-80 md:h-96 group">
+              {/* Cadre décalé accent */}
               <div
-                className="absolute -inset-1 rounded-3xl opacity-60"
-                style={{
-                  background: 'linear-gradient(135deg, #16C79A, #0F3460, #16C79A)',
-                  animation: 'spin 8s linear infinite',
-                }}
+                className="absolute inset-0 translate-x-4 translate-y-4 rounded-2xl border transition-transform duration-500 group-hover:translate-x-3 group-hover:translate-y-3"
+                style={{ borderColor: 'var(--accent)' }}
               />
-              {/* Photo container */}
-              <div className="relative w-full h-full rounded-3xl overflow-hidden border-2 border-[#16C79A]/30 shadow-2xl" style={{ background: 'var(--bg-card)' }}>
+              {/* Photo */}
+              <div
+                className="relative w-full h-full rounded-2xl overflow-hidden border"
+                style={{ borderColor: 'var(--border-card)', background: 'var(--bg-card)' }}
+              >
                 <img
                   src={photoUrl}
                   alt="Josué Hounkanrin"
                   width={400}
                   height={500}
-                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   loading="lazy"
                 />
-                {/* Subtle gradient overlay at bottom */}
-                <div className="absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-t from-black/40 to-transparent" />
+                {/* Teinte accent qui s'efface au survol (signature) */}
+                <div className="absolute inset-0 bg-[#17c99b]/25 group-hover:bg-transparent transition-colors duration-500" />
               </div>
             </div>
           </motion.div>

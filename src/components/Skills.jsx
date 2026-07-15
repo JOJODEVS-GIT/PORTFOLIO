@@ -25,18 +25,20 @@ export default function Skills() {
   return (
     <section id="skills" className="py-20 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
-        <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }}
-          className="text-4xl md:text-5xl font-bold mb-16 text-center">
-          Compétences <span className="accent-gradient">Techniques</span>
-        </motion.h2>
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }}
+          className="section-heading">
+          <span className="idx text-base sm:text-lg">05.</span>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl">Compétences</h2>
+          <span className="rule" />
+        </motion.div>
 
         <motion.div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6" variants={containerVariants} initial="hidden" whileInView="visible" viewport={{ once: true }}>
           {skillsData.map((skill, idx) => {
             const IconComponent = getIcon(skill.iconName);
             return (
-              <motion.div key={skill.id || idx} variants={itemVariants} className="card flex flex-col items-center justify-center py-8 hover:scale-105">
-                <IconComponent className={`${skill.color} mb-3`} size={40} />
-                <p className="text-center font-semibold text-sm" style={{ color: 'var(--text-secondary)' }}>{skill.name}</p>
+              <motion.div key={skill.id || idx} variants={itemVariants} className="card group flex flex-col items-center justify-center py-8">
+                <IconComponent className="mb-4 sk-ic" size={36} />
+                <p className="text-center text-sm" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)' }}>{skill.name}</p>
               </motion.div>
             );
           })}

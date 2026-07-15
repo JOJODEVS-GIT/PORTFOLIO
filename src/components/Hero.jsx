@@ -19,68 +19,81 @@ export default function Hero() {
   return (
     <section
       id="hero"
-      className="min-h-screen flex items-center justify-center relative pt-20 overflow-hidden"
+      className="min-h-screen flex items-center relative pt-24 overflow-hidden"
       style={{ background: 'var(--hero-gradient)' }}
     >
-      <div className="absolute inset-0 -z-10">
-        <div className="absolute top-40 left-10 w-72 h-72 bg-[#16C79A]/15 rounded-full blur-3xl" />
-        <div className="absolute bottom-40 right-10 w-72 h-72 rounded-full blur-3xl" style={{ background: 'rgba(15,52,96,0.3)' }} />
+      {/* Atmosphère : halos diffus raffinés */}
+      <div className="absolute inset-0 -z-10 overflow-hidden">
+        <div
+          className="absolute -top-32 -right-40 w-[42rem] h-[42rem] rounded-full blur-[130px]"
+          style={{ background: 'var(--accent-glow)' }}
+        />
+        <div
+          className="absolute bottom-[-10rem] left-[15%] w-[30rem] h-[30rem] rounded-full blur-[140px]"
+          style={{ background: 'rgba(15,52,96,0.12)' }}
+        />
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <div className="mb-6 animate-hero-item" style={{ animationDelay: '0.3s' }}>
-          <span className="inline-block px-4 py-2 bg-[#16C79A]/10 border border-[#16C79A]/30 rounded-full text-[#16C79A] text-sm font-semibold">
-            {badge}
-          </span>
-        </div>
+      <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 w-full">
+        <p className="overline mb-6 animate-hero-item" style={{ animationDelay: '0.15s' }}>
+          {badge}
+        </p>
 
-        <h1
-          className="text-5xl sm:text-6xl md:text-7xl font-bold mb-6 leading-tight"
-          style={{ color: 'var(--text-primary)' }}
-        >
-          {title}{' '}
-          <span className="accent-gradient">{name}</span>
+        <h1 className="animate-hero-item" style={{ animationDelay: '0.3s' }}>
+          <span
+            className="block font-display text-2xl sm:text-3xl font-medium mb-3"
+            style={{ color: 'var(--text-secondary)' }}
+          >
+            {title}
+          </span>
+          <span className="block accent-gradient font-display text-6xl sm:text-7xl lg:text-8xl leading-[0.9]">
+            {name}.
+          </span>
         </h1>
 
         <p
-          className="text-lg sm:text-xl mb-4 max-w-3xl mx-auto animate-hero-item"
-          style={{ color: 'var(--text-secondary)', animationDelay: '0.7s' }}
+          className="mt-7 font-display text-3xl sm:text-4xl lg:text-5xl font-medium max-w-3xl leading-[1.08] animate-hero-item"
+          style={{ color: 'var(--text-primary)', opacity: 0.72, animationDelay: '0.5s' }}
         >
-          <span className="text-[#16C79A] font-semibold">{subtitle}</span>
+          {subtitle}
         </p>
 
         <p
-          className="text-base sm:text-lg mb-8 max-w-3xl mx-auto leading-relaxed animate-hero-item"
-          style={{ color: 'var(--text-secondary)', animationDelay: '0.9s' }}
+          className="mt-7 text-base sm:text-lg max-w-xl leading-relaxed animate-hero-item"
+          style={{ color: 'var(--text-secondary)', animationDelay: '0.7s' }}
         >
           {description}
         </p>
 
         <div
-          className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-hero-item"
-          style={{ animationDelay: '1.1s' }}
+          className="mt-10 flex flex-col sm:flex-row items-start sm:items-center gap-4 animate-hero-item"
+          style={{ animationDelay: '0.9s' }}
         >
-          <a href={ctaPrimaryLink} className="btn-primary flex items-center gap-2 group">
+          <a href={ctaPrimaryLink} className="btn-primary group">
             {ctaPrimaryText}
-            <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+            <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
           </a>
           <a
             href={ctaSecondaryLink}
             target={isExternal ? '_blank' : undefined}
             rel={isExternal ? 'noopener noreferrer' : undefined}
-            className="btn-secondary flex items-center gap-2"
+            className="btn-secondary group"
           >
             {ctaSecondaryText}
-            <ExternalLink size={20} />
+            <ExternalLink size={16} className="opacity-70 group-hover:opacity-100 transition-opacity" />
           </a>
         </div>
+      </div>
 
-        <div className="mt-16 animate-bounce-slow" aria-hidden="true">
-          <div className="flex justify-center">
-            <div className="w-6 h-10 border-2 border-[#16C79A]/40 rounded-full flex items-start justify-center p-2">
-              <div className="w-1 h-2 bg-[#16C79A] rounded-full" />
-            </div>
-          </div>
+      {/* Indicateur de scroll */}
+      <div
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 animate-hero-item"
+        style={{ animationDelay: '1.3s' }}
+        aria-hidden="true"
+      >
+        <span className="overline" style={{ fontSize: '0.6rem', letterSpacing: '0.3em' }}>Scroll</span>
+        <div className="w-5 h-9 rounded-full border flex items-start justify-center p-1.5" style={{ borderColor: 'var(--border-card)' }}>
+          <div className="w-1 h-1.5 rounded-full animate-bounce-slow" style={{ background: 'var(--accent)' }} />
         </div>
       </div>
     </section>

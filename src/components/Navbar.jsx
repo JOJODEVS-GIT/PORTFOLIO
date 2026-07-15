@@ -52,6 +52,7 @@ export default function Navbar() {
     { label: 'Parcours', href: '#parcours' },
     { label: 'Projets', href: '#projects' },
     { label: 'Compétences', href: '#skills' },
+    { label: 'Avis', href: '#testimonials' },
     { label: 'Contact', href: '#contact' },
   ];
 
@@ -72,7 +73,7 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
           <a
             href="#hero"
-            className="text-2xl font-bold animate-fade-in"
+            className="text-2xl font-display font-semibold animate-fade-in tracking-tight"
           >
             <span style={{ color: 'var(--text-primary)' }}>{logoText}</span>
             <span className="text-[#16C79A]">{logoDot}</span>

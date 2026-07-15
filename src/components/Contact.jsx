@@ -64,19 +64,21 @@ export default function Contact() {
     }
   };
 
-  const inputClass = "w-full px-4 py-3 border border-[#16C79A]/20 rounded-lg focus:border-[#16C79A] focus:outline-none transition-colors";
+  const inputClass = "w-full px-4 py-3 rounded-lg border border-[color:var(--border-card)] focus:outline-none transition-colors focus:border-[#17c99b]";
 
   return (
     <section id="contact" className="py-20 px-4 sm:px-6 lg:px-8" style={{ backgroundColor: 'var(--bg-accent)' }}>
       <div className="max-w-4xl mx-auto">
-        <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }}
-          className="text-4xl md:text-5xl font-bold mb-4 text-center">
-          Me <span className="accent-gradient">Contacter</span>
-        </motion.h2>
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }}
+          className="section-heading !mb-4">
+          <span className="idx text-base sm:text-lg">07.</span>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl">Contact</h2>
+          <span className="rule" />
+        </motion.div>
 
         <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
-          className="text-center mb-16" style={{ color: 'var(--text-secondary)' }}>
-          Discutons de votre projet !
+          className="mb-16 max-w-xl" style={{ color: 'var(--text-secondary)' }}>
+          Un projet en tête ? Discutons-en.
         </motion.p>
 
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }}

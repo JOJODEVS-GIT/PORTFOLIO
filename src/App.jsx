@@ -15,6 +15,7 @@ const ParcoursForm = lazy(() => import('./admin/ParcoursForm'));
 const ServicesForm = lazy(() => import('./admin/ServicesForm'));
 const ProjectsForm = lazy(() => import('./admin/ProjectsForm'));
 const SkillsForm = lazy(() => import('./admin/SkillsForm'));
+const TestimonialsForm = lazy(() => import('./admin/TestimonialsForm'));
 const ContactForm = lazy(() => import('./admin/ContactForm'));
 const ProtectedRoute = lazy(() => import('./components/ProtectedRoute'));
 
@@ -53,6 +54,7 @@ function App() {
           <Route path="services" element={<ServicesForm />} />
           <Route path="projects" element={<ProjectsForm />} />
           <Route path="skills" element={<SkillsForm />} />
+          <Route path="testimonials" element={<TestimonialsForm />} />
           <Route path="contact" element={<ContactForm />} />
         </Route>
         <Route path="*" element={<NotFound />} />

@@ -9,6 +9,7 @@ const Services = lazy(() => import('./Services'));
 const Parcours = lazy(() => import('./Parcours'));
 const Projects = lazy(() => import('./Projects'));
 const Skills = lazy(() => import('./Skills'));
+const Testimonials = lazy(() => import('./Testimonials'));
 const Contact = lazy(() => import('./Contact'));
 const Footer = lazy(() => import('./Footer'));
 
@@ -31,6 +32,7 @@ export default function PortfolioPage() {
           <Parcours />
           <Projects />
           <Skills />
+          <Testimonials />
           <Contact />
         </Suspense>
       </main>

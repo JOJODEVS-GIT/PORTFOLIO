@@ -65,10 +65,11 @@ export function SiteDataProvider({ children }) {
   const [services, setServices] = useState([]);
   const [projects, setProjects] = useState([]);
   const [skills, setSkills] = useState([]);
+  const [testimonials, setTestimonials] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const loadAllData = useCallback(async () => {
-    const [siteData, heroData, aboutData, contactData, statsData, parcoursData, servicesData, projectsData, skillsData] = await Promise.all([
+    const [siteData, heroData, aboutData, contactData, statsData, parcoursData, servicesData, projectsData, skillsData, testimonialsData] = await Promise.all([
       fetchDoc('settings', 'site'),
       fetchDoc('settings', 'hero'),
       fetchDoc('settings', 'about'),
@@ -78,6 +79,7 @@ export function SiteDataProvider({ children }) {
       fetchCollection('services'),
       fetchCollection('projects'),
       fetchCollection('skills'),
+      fetchCollection('testimonials'),
     ]);
 
     setSite(siteData);
@@ -89,6 +91,7 @@ export function SiteDataProvider({ children }) {
     setServices(servicesData);
     setProjects(projectsData);
     setSkills(skillsData);
+    setTestimonials(testimonialsData);
     setLoading(false);
   }, []);
 
@@ -99,9 +102,9 @@ export function SiteDataProvider({ children }) {
 
   const value = useMemo(() => ({
     site, hero, about, contact,
-    stats, parcours, services, projects, skills,
+    stats, parcours, services, projects, skills, testimonials,
     loading, refreshData: loadAllData,
-  }), [site, hero, about, contact, stats, parcours, services, projects, skills, loading, loadAllData]);
+  }), [site, hero, about, contact, stats, parcours, services, projects, skills, testimonials, loading, loadAllData]);
 
   return (
     <SiteDataContext.Provider value={value}>

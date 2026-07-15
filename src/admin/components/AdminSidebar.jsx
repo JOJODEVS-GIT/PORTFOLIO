@@ -1,7 +1,7 @@
 import { NavLink, Link } from 'react-router-dom';
 import {
   LayoutDashboard, Settings, Sparkles, BarChart3,
-  User, Route, Briefcase, FolderGit2, Code2, Mail, Menu, X, LogOut
+  User, Route, Briefcase, FolderGit2, Code2, Mail, Menu, X, LogOut, MessageSquareQuote
 } from 'lucide-react';
 import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
@@ -16,6 +16,7 @@ const links = [
   { to: '/admin/services', label: 'Services', icon: Briefcase },
   { to: '/admin/projects', label: 'Projets', icon: FolderGit2 },
   { to: '/admin/skills', label: 'Compétences', icon: Code2 },
+  { to: '/admin/testimonials', label: 'Témoignages', icon: MessageSquareQuote },
   { to: '/admin/contact', label: 'Contact', icon: Mail },
 ];
 

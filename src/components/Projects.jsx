@@ -38,12 +38,12 @@ function ProjectCard({ project, idx }) {
         </div>
       )}
 
-      <h3 className="text-lg font-bold mb-2 group-hover:text-[#16C79A] transition-colors">{project.title}</h3>
-      <p className="text-sm mb-4 line-clamp-2" style={{ color: 'var(--text-secondary)' }}>{project.description}</p>
+      <h3 className="text-lg font-display font-semibold mb-2 group-hover:text-[#16C79A] transition-colors">{project.title}</h3>
+      <p className="text-sm mb-5 line-clamp-2" style={{ color: 'var(--text-secondary)' }}>{project.description}</p>
 
       <div className="flex flex-wrap gap-2 mb-6">
         {(project.tech || []).map((tech, tidx) => (
-          <span key={tidx} className="px-3 py-1 bg-[#16C79A]/10 border border-[#16C79A]/20 rounded-full text-[#16C79A] text-xs font-semibold">{tech}</span>
+          <span key={tidx} className="px-2.5 py-1 rounded text-[0.7rem]" style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent)', background: 'var(--accent-glow)' }}>{tech}</span>
         ))}
       </div>
 
@@ -107,28 +107,33 @@ export default function Projects() {
   return (
     <section id="projects" className="py-20 px-4 sm:px-6 lg:px-8" style={{ backgroundColor: 'var(--bg-accent)' }}>
       <div className="max-w-7xl mx-auto">
-        <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }}
-          className="text-4xl md:text-5xl font-bold mb-12 text-center">
-          Mes <span className="accent-gradient">Projets</span>
-        </motion.h2>
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }}
+          className="section-heading">
+          <span className="idx text-base sm:text-lg">04.</span>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl">Projets</h2>
+          <span className="rule" />
+        </motion.div>
 
-        <div className="flex flex-wrap justify-center gap-3 mb-12">
-          {categories.map((category) => (
-            <button
-              key={category}
-              onClick={() => handleCategoryChange(category)}
-              className={`px-6 py-2 rounded-lg font-semibold transition-all duration-300 ${
-                selectedCategory === category ? 'text-white shadow-lg' : 'border'
-              }`}
-              style={
-                selectedCategory === category
-                  ? { background: 'linear-gradient(135deg, #16C79A, var(--accent-dark))', boxShadow: '0 4px 15px rgba(22,199,154,0.3)' }
-                  : { background: 'var(--bg-card)', borderColor: 'var(--border-card)', color: 'var(--text-secondary)' }
-              }
-            >
-              {category}
-            </button>
-          ))}
+        <div className="flex flex-wrap gap-3 mb-12">
+          {categories.map((category) => {
+            const active = selectedCategory === category;
+            return (
+              <button
+                key={category}
+                onClick={() => handleCategoryChange(category)}
+                className="px-5 py-2 rounded-md text-sm transition-all duration-300"
+                style={{
+                  fontFamily: 'var(--font-mono)',
+                  letterSpacing: '0.02em',
+                  background: active ? 'var(--accent-glow)' : 'transparent',
+                  border: `1px solid ${active ? 'var(--accent)' : 'var(--border-card)'}`,
+                  color: active ? 'var(--accent)' : 'var(--text-secondary)',
+                }}
+              >
+                {category}
+              </button>
+            );
+          })}
         </div>
 
         {/* Carousel container */}
@@ -137,10 +142,11 @@ export default function Projects() {
           {totalPages > 1 && currentPage > 0 && (
             <button
               onClick={() => paginate(-1)}
-              className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 z-10 w-11 h-11 items-center justify-center rounded-full text-white shadow-lg transition-transform hover:scale-110"
-              style={{ background: 'linear-gradient(135deg, #16C79A, var(--accent-dark))' }}
+              aria-label="Projets précédents"
+              className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 z-10 w-11 h-11 items-center justify-center rounded-full transition-all hover:-translate-x-0.5"
+              style={{ border: '1px solid var(--border-card)', color: 'var(--accent)', background: 'var(--bg-card)' }}
             >
-              <ChevronLeft size={22} />
+              <ChevronLeft size={20} />
             </button>
           )}
 
@@ -148,10 +154,11 @@ export default function Projects() {
           {totalPages > 1 && currentPage < totalPages - 1 && (
             <button
               onClick={() => paginate(1)}
-              className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 z-10 w-11 h-11 items-center justify-center rounded-full text-white shadow-lg transition-transform hover:scale-110"
-              style={{ background: 'linear-gradient(135deg, #16C79A, var(--accent-dark))' }}
+              aria-label="Projets suivants"
+              className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 z-10 w-11 h-11 items-center justify-center rounded-full transition-all hover:translate-x-0.5"
+              style={{ border: '1px solid var(--border-card)', color: 'var(--accent)', background: 'var(--bg-card)' }}
             >
-              <ChevronRight size={22} />
+              <ChevronRight size={20} />
             </button>
           )}
 
