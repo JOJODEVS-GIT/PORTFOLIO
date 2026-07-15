@@ -5,7 +5,8 @@ import { restSetDoc, restAddDoc, restDeleteDoc } from '../firebase/firestoreRest
 import FormField from './components/FormField';
 import ImageUpload from './components/ImageUpload';
 import ItemList from './components/ItemList';
-import { Plus, Save, X } from 'lucide-react';
+import { fallbackProjects, repoKey, normTitle } from '../components/Projects';
+import { Plus, Save, X, DownloadCloud } from 'lucide-react';
 
 const emptyForm = {
   title: '',
@@ -54,6 +55,51 @@ export default function ProjectsForm() {
   };
 
   const [status, setStatus] = useState(null);
+  const [importing, setImporting] = useState(false);
+
+  const handleImportDefaults = async () => {
+    if (!confirm("Importer tes projets par défaut ?\n\nAjoute les projets manquants et complète les images / descriptions longues / rôle / année sur les projets existants. Ne supprime rien.")) return;
+    setImporting(true);
+    try {
+      const byRepo = {};
+      const byTitle = {};
+      for (const p of projects) {
+        if (p.github) byRepo[repoKey(p.github)] = p;
+        byTitle[normTitle(p.title)] = p;
+      }
+
+      let added = 0;
+      let updated = 0;
+      for (const local of fallbackProjects) {
+        const { id: _localId, ...localData } = local;
+        const existing = (local.github && byRepo[repoKey(local.github)]) || byTitle[normTitle(local.title)];
+
+        if (existing) {
+          const merged = { ...existing };
+          for (const [k, v] of Object.entries(localData)) {
+            const cur = existing[k];
+            const curEmpty = cur === '' || cur == null || (Array.isArray(cur) && cur.length === 0);
+            const valEmpty = v === '' || v == null || (Array.isArray(v) && v.length === 0);
+            if (curEmpty && !valEmpty) merged[k] = v;
+          }
+          delete merged.id;
+          await restSetDoc(user, 'projects', existing.id, merged);
+          updated++;
+        } else {
+          await restAddDoc(user, 'projects', { ...localData, order: projects.length + added });
+          added++;
+        }
+      }
+
+      await refreshData();
+      setStatus({ type: 'success', message: `Import terminé : ${added} ajouté(s), ${updated} complété(s).` });
+    } catch (err) {
+      console.error(err);
+      setStatus({ type: 'error', message: `Erreur import: ${err.message}` });
+    } finally {
+      setImporting(false);
+    }
+  };
 
   const handleDelete = async (id) => {
     if (confirm('Supprimer ce projet ?')) {
@@ -215,7 +261,22 @@ export default function ProjectsForm() {
       </div>
 
       <div className="card">
-        <h3 className="font-bold mb-4">Projets ({projects.length})</h3>
+        <div className="flex items-center justify-between mb-4 gap-3 flex-wrap">
+          <h3 className="font-bold">Projets ({projects.length})</h3>
+          <button
+            type="button"
+            onClick={handleImportDefaults}
+            disabled={importing}
+            className="btn-secondary flex items-center gap-2 text-sm disabled:opacity-50"
+            title="Ajoute les projets manquants et complète images/descriptions"
+          >
+            {importing ? (
+              <><div className="w-4 h-4 border-2 border-[#16C79A] border-t-transparent rounded-full animate-spin" /> Import...</>
+            ) : (
+              <><DownloadCloud size={16} /> Importer mes projets par défaut</>
+            )}
+          </button>
+        </div>
         <ItemList
           items={projects}
           onEdit={handleEdit}

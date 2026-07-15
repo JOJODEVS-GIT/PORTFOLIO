@@ -20,8 +20,8 @@ export const fallbackProjects = [
 ];
 
 /** Clé de rapprochement : nom du repo GitHub, sinon titre normalisé */
-const repoKey = (url) => (url || '').toLowerCase().replace(/\/+$/, '').split('/').pop();
-const normTitle = (t) => (t || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]/g, '');
+export const repoKey = (url) => (url || '').toLowerCase().replace(/\/+$/, '').split('/').pop();
+export const normTitle = (t) => (t || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]/g, '');
 
 /** Complète un projet Firestore avec les valeurs locales (image, description longue…) là où Firestore est vide */
 function mergeProject(fs, local) {
