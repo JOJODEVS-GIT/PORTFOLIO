@@ -10,8 +10,12 @@ import { Plus, Save, X } from 'lucide-react';
 const emptyForm = {
   title: '',
   description: '',
+  longDescription: '',
+  role: '',
+  year: '',
   category: 'React',
   tech: [''],
+  gallery: [''],
   gradient: 'from-[#16C79A] to-[#0F3460]',
   imageUrl: '',
   github: '',
@@ -34,8 +38,12 @@ export default function ProjectsForm() {
     setForm({
       title: item.title || '',
       description: item.description || '',
+      longDescription: item.longDescription || '',
+      role: item.role || '',
+      year: item.year || '',
       category: item.category || 'React',
       tech: item.tech?.length ? [...item.tech] : [''],
+      gallery: item.gallery?.length ? [...item.gallery] : [''],
       gradient: item.gradient || 'from-[#16C79A] to-[#0F3460]',
       imageUrl: item.imageUrl || '',
       github: item.github || '',
@@ -71,11 +79,20 @@ export default function ProjectsForm() {
   const addTech = () => setForm({ ...form, tech: [...form.tech, ''] });
   const removeTech = (idx) => setForm({ ...form, tech: form.tech.filter((_, i) => i !== idx) });
 
+  const updateGallery = (idx, value) => {
+    const newGallery = [...form.gallery];
+    newGallery[idx] = value;
+    setForm({ ...form, gallery: newGallery });
+  };
+  const addGallery = () => setForm({ ...form, gallery: [...form.gallery, ''] });
+  const removeGallery = (idx) => setForm({ ...form, gallery: form.gallery.filter((_, i) => i !== idx) });
+
   const handleSave = async (e) => {
     e.preventDefault();
     const data = {
       ...form,
       tech: form.tech.filter((t) => t.trim()),
+      gallery: form.gallery.filter((g) => g.trim()),
       order: Number(form.order),
     };
 
@@ -109,7 +126,14 @@ export default function ProjectsForm() {
         <h3 className="font-bold mb-4">{editing ? 'Modifier' : 'Ajouter'} un projet</h3>
         <form onSubmit={handleSave} className="space-y-4">
           <FormField label="Titre" name="title" value={form.title} onChange={handleChange} required />
-          <FormField label="Description" name="description" value={form.description} onChange={handleChange} rows={3} required />
+          <FormField label="Description courte (carte)" name="description" value={form.description} onChange={handleChange} rows={2} required />
+          <FormField label="Description longue (page détail)" name="longDescription" value={form.longDescription} onChange={handleChange} rows={5} placeholder="Le contexte, ton rôle, les défis, le résultat..." />
+
+          <div className="grid sm:grid-cols-2 gap-4">
+            <FormField label="Rôle" name="role" value={form.role} onChange={handleChange} placeholder="Conception & dev full stack" />
+            <FormField label="Année" name="year" value={form.year} onChange={handleChange} placeholder="2025" />
+          </div>
+
           <FormField label="Catégorie" name="category" value={form.category} onChange={handleChange} placeholder="React, HTML/CSS/JS..." required />
 
           <div>
@@ -140,6 +164,31 @@ export default function ProjectsForm() {
           <div className="card space-y-3" style={{ backgroundColor: 'var(--bg-accent)' }}>
             <h4 className="text-sm font-semibold" style={{ color: 'var(--text-secondary)' }}>Image du projet</h4>
             <ImageUpload value={form.imageUrl} onChange={(url) => setForm({ ...form, imageUrl: url })} folder="projects" />
+          </div>
+
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <label className="text-sm font-semibold" style={{ color: 'var(--text-secondary)' }}>Galerie (URLs d'images, page détail)</label>
+              <button type="button" onClick={addGallery} className="text-[#16C79A] text-sm flex items-center gap-1">
+                <Plus size={14} /> Ajouter
+              </button>
+            </div>
+            {form.gallery.map((g, idx) => (
+              <div key={idx} className="flex gap-2 mb-2">
+                <input
+                  value={g}
+                  onChange={(e) => updateGallery(idx, e.target.value)}
+                  className="flex-1 px-4 py-2 border border-[#16C79A]/20 rounded-lg focus:border-[#16C79A] focus:outline-none text-sm"
+                  style={{ backgroundColor: 'var(--bg-input)', color: 'var(--text-primary)' }}
+                  placeholder={`https://... (image ${idx + 1})`}
+                />
+                {form.gallery.length > 1 && (
+                  <button type="button" onClick={() => removeGallery(idx)} className="p-2 text-red-400 hover:text-red-300">
+                    <X size={16} />
+                  </button>
+                )}
+              </div>
+            ))}
           </div>
 
           <FormField label="Gradient (fallback)" name="gradient" value={form.gradient} onChange={handleChange} placeholder="from-[#16C79A] to-[#0F3460]" />

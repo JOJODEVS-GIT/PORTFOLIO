@@ -1,22 +1,54 @@
 import { motion, AnimatePresence, useMotionValue } from 'framer-motion';
-import { Github, ExternalLink, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Github, ExternalLink, ChevronLeft, ChevronRight, ArrowUpRight } from 'lucide-react';
 import { useState, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { useSiteData } from '../context/SiteDataContext';
 
 const PROJECTS_PER_PAGE = 6;
 const SWIPE_THRESHOLD = 50;
 
-const fallbackProjects = [
-  { id: 1, title: 'JOJO E-Commerce Mastery', description: 'Plateforme e-commerce complète avec panier, paiement et gestion produits.', imageUrl: '/images/jojo-ecommerce.webp', category: 'React', tech: ['TypeScript', 'React', 'Vite'], github: 'https://github.com/JOJODEVS-GIT/JOJO-ECOMMERCE-MASTERY', live: 'https://jojo-ecommerce-mastery.vercel.app' },
-  { id: 2, title: 'Bloom Event', description: 'Plateforme de réservation d\'événements au Bénin avec recherche et catégories.', imageUrl: '/images/bloom-event.webp', category: 'HTML/CSS/JS', tech: ['HTML', 'CSS', 'Bootstrap', 'JavaScript'], github: 'https://github.com/JOJODEVS-GIT/BLOOM-EVENT', live: 'https://jojodevs-git.github.io/BLOOM-EVENT/' },
-  { id: 3, title: 'MODALLAS', description: 'Site vitrine de mode africaine avec catalogue et panier intégré.', imageUrl: '/images/modallas.webp', category: 'HTML/CSS/JS', tech: ['HTML', 'CSS', 'JavaScript'], github: 'https://github.com/JOJODEVS-GIT/MODALLAS', live: 'https://jojodevs-git.github.io/MODALLAS/' },
-  { id: 4, title: 'Afro Flash Bénin', description: 'Site vitrine d\'actualités et de services au Bénin avec recherche d\'articles.', imageUrl: '/images/afro-flash-benin.webp', category: 'HTML/CSS/JS', tech: ['HTML', 'CSS', 'Bootstrap', 'JavaScript'], github: 'https://github.com/JOJODEVS-GIT/AFRO-FLASH-BENIN-SITE', live: 'https://jojodevs-git.github.io/AFRO-FLASH-BENIN-SITE/' },
-  { id: 5, title: 'Reality Prompt Engine', description: 'Générateur de prompts IA avec interface intuitive et configuration avancée.', imageUrl: '/images/reality-prompt.webp', category: 'HTML/CSS/JS', tech: ['HTML', 'CSS', 'JavaScript'], github: 'https://github.com/JOJODEVS-GIT/REALITY-PROMPT-ENGINE', live: 'https://jojodevs-git.github.io/REALITY-PROMPT-ENGINE/' },
-  { id: 6, title: 'Mon Produit', description: 'Dashboard de gestion de produits avec statistiques, ROI et suivi des bénéfices.', imageUrl: '/images/mon-produit.webp', category: 'HTML/CSS/JS', tech: ['HTML', 'CSS', 'JavaScript'], github: 'https://github.com/JOJODEVS-GIT/MON-PRODUIT', live: 'https://jojodevs-git.github.io/MON-PRODUIT/' },
-  { id: 7, title: 'QCM JavaScript', description: 'Quiz interactif JavaScript — 70 questions, 7 thèmes, timer 20s par question.', imageUrl: '/images/qcm-javascript.webp', category: 'HTML/CSS/JS', tech: ['HTML', 'CSS', 'JavaScript'], github: 'https://github.com/JOJODEVS-GIT/QCM-JAVASCRIPT', live: 'https://jojodevs-git.github.io/QCM-JAVASCRIPT/' },
-  { id: 8, title: 'Suivi Chauffeur', description: 'Application de suivi de paiements chauffeurs en temps réel avec historique.', imageUrl: '/images/suivi-chauffeur.webp', category: 'HTML/CSS/JS', tech: ['HTML', 'CSS', 'JavaScript'], github: 'https://github.com/JOJODEVS-GIT/SUIVI-CHAUFFEUR', live: 'https://jojodevs-git.github.io/SUIVI-CHAUFFEUR/' },
-  { id: 9, title: 'Générateur QR Codes', description: 'Outil desktop de génération de QR codes avec interface graphique Tkinter.', gradient: 'from-purple-600 to-[#0F3460]', category: 'Python', tech: ['Python', 'Tkinter', 'qrcode'], github: 'https://github.com/JOJODEVS-GIT/GENERATEUR-QR-CODES' },
+export const fallbackProjects = [
+  { id: 1, title: 'JOJO E-Commerce Mastery', description: 'Plateforme e-commerce complète avec panier, paiement et gestion produits.', longDescription: "Une plateforme e-commerce complète pensée pour les créateurs et commerçants. Gestion du catalogue, panier, tunnel de paiement et back-office de suivi des ventes. Interface rapide et responsive construite avec React et Vite.", role: 'Conception & développement full stack', year: '2025', imageUrl: '/images/jojo-ecommerce.webp', category: 'React', tech: ['TypeScript', 'React', 'Vite'], github: 'https://github.com/JOJODEVS-GIT/JOJO-ECOMMERCE-MASTERY', live: 'https://jojo-ecommerce-mastery.vercel.app' },
+  { id: 2, title: 'Bloom Event', description: 'Plateforme de réservation d\'événements au Bénin avec recherche et catégories.', longDescription: "Plateforme de découverte et de réservation d'événements au Bénin. Recherche par catégories, fiches événement détaillées et parcours de réservation fluide. Design vitrine soigné en Bootstrap.", role: 'Développement front-end', year: '2024', imageUrl: '/images/bloom-event.webp', category: 'HTML/CSS/JS', tech: ['HTML', 'CSS', 'Bootstrap', 'JavaScript'], github: 'https://github.com/JOJODEVS-GIT/BLOOM-EVENT', live: 'https://jojodevs-git.github.io/BLOOM-EVENT/' },
+  { id: 3, title: 'MODALLAS', description: 'Site vitrine de mode africaine avec catalogue et panier intégré.', longDescription: "Site vitrine de mode africaine mettant en valeur les collections avec un catalogue visuel et un panier intégré. Une identité chaleureuse au service de la marque.", role: 'Design & intégration', year: '2024', imageUrl: '/images/modallas.webp', category: 'HTML/CSS/JS', tech: ['HTML', 'CSS', 'JavaScript'], github: 'https://github.com/JOJODEVS-GIT/MODALLAS', live: 'https://jojodevs-git.github.io/MODALLAS/' },
+  { id: 4, title: 'Afro Flash Bénin', description: 'Site vitrine d\'actualités et de services au Bénin avec recherche d\'articles.', longDescription: "Portail d'actualités et de services au Bénin. Recherche d'articles, mise en avant des contenus et navigation claire pour une lecture agréable sur mobile comme sur desktop.", role: 'Développement front-end', year: '2024', imageUrl: '/images/afro-flash-benin.webp', category: 'HTML/CSS/JS', tech: ['HTML', 'CSS', 'Bootstrap', 'JavaScript'], github: 'https://github.com/JOJODEVS-GIT/AFRO-FLASH-BENIN-SITE', live: 'https://jojodevs-git.github.io/AFRO-FLASH-BENIN-SITE/' },
+  { id: 5, title: 'Reality Prompt Engine', description: 'Générateur de prompts IA avec interface intuitive et configuration avancée.', longDescription: "Outil de génération de prompts IA avec une interface intuitive et des options de configuration avancées. Pensé pour accélérer le travail des créateurs de contenu et des développeurs.", role: 'Conception & développement', year: '2024', imageUrl: '/images/reality-prompt.webp', category: 'HTML/CSS/JS', tech: ['HTML', 'CSS', 'JavaScript'], github: 'https://github.com/JOJODEVS-GIT/REALITY-PROMPT-ENGINE', live: 'https://jojodevs-git.github.io/REALITY-PROMPT-ENGINE/' },
+  { id: 6, title: 'Mon Produit', description: 'Dashboard de gestion de produits avec statistiques, ROI et suivi des bénéfices.', longDescription: "Tableau de bord de gestion de produits avec statistiques, calcul de ROI et suivi des bénéfices. Un outil concret pour piloter une activité au quotidien.", role: 'Développement front-end', year: '2024', imageUrl: '/images/mon-produit.webp', category: 'HTML/CSS/JS', tech: ['HTML', 'CSS', 'JavaScript'], github: 'https://github.com/JOJODEVS-GIT/MON-PRODUIT', live: 'https://jojodevs-git.github.io/MON-PRODUIT/' },
+  { id: 7, title: 'QCM JavaScript', description: 'Quiz interactif JavaScript — 70 questions, 7 thèmes, timer 20s par question.', longDescription: "Quiz interactif pour s'entraîner en JavaScript : 70 questions réparties en 7 thèmes, timer de 20s par question et statistiques de résultats. Ludique et pédagogique.", role: 'Conception & développement', year: '2024', imageUrl: '/images/qcm-javascript.webp', category: 'HTML/CSS/JS', tech: ['HTML', 'CSS', 'JavaScript'], github: 'https://github.com/JOJODEVS-GIT/QCM-JAVASCRIPT', live: 'https://jojodevs-git.github.io/QCM-JAVASCRIPT/' },
+  { id: 8, title: 'Suivi Chauffeur', description: 'Application de suivi de paiements chauffeurs en temps réel avec historique.', longDescription: "Application de suivi des paiements chauffeurs en temps réel, avec historique et vue d'ensemble. Conçue pour simplifier la gestion au jour le jour.", role: 'Développement front-end', year: '2024', imageUrl: '/images/suivi-chauffeur.webp', category: 'HTML/CSS/JS', tech: ['HTML', 'CSS', 'JavaScript'], github: 'https://github.com/JOJODEVS-GIT/SUIVI-CHAUFFEUR', live: 'https://jojodevs-git.github.io/SUIVI-CHAUFFEUR/' },
+  { id: 9, title: 'Générateur QR Codes', description: 'Outil desktop de génération de QR codes avec interface graphique Tkinter.', longDescription: "Application desktop de génération de QR codes avec une interface graphique Tkinter. Un utilitaire simple et efficace développé en Python.", role: 'Développement Python', year: '2023', gradient: 'from-purple-600 to-[#0F3460]', category: 'Python', tech: ['Python', 'Tkinter', 'qrcode'], github: 'https://github.com/JOJODEVS-GIT/GENERATEUR-QR-CODES' },
 ];
+
+/** Clé de rapprochement : nom du repo GitHub, sinon titre normalisé */
+const repoKey = (url) => (url || '').toLowerCase().replace(/\/+$/, '').split('/').pop();
+const normTitle = (t) => (t || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]/g, '');
+
+/** Complète un projet Firestore avec les valeurs locales (image, description longue…) là où Firestore est vide */
+function mergeProject(fs, local) {
+  if (!local) return fs;
+  const merged = { ...local };
+  for (const [k, v] of Object.entries(fs)) {
+    const empty = v === '' || v == null || (Array.isArray(v) && v.length === 0);
+    if (!empty) merged[k] = v;
+  }
+  merged.id = fs.id;
+  return merged;
+}
+
+/** Source de vérité des projets : Firestore (admin) complété par le fallback local */
+export function resolveProjects(firestoreProjects) {
+  if (!firestoreProjects?.length) return fallbackProjects;
+  const byRepo = {};
+  const byTitle = {};
+  for (const p of fallbackProjects) {
+    if (p.github) byRepo[repoKey(p.github)] = p;
+    byTitle[normTitle(p.title)] = p;
+  }
+  return firestoreProjects.map((fs) => {
+    const local = (fs.github && byRepo[repoKey(fs.github)]) || byTitle[normTitle(fs.title)] || null;
+    return mergeProject(fs, local);
+  });
+}
 
 function ProjectCard({ project, idx }) {
   return (
@@ -38,7 +70,12 @@ function ProjectCard({ project, idx }) {
         </div>
       )}
 
-      <h3 className="text-lg font-display font-semibold mb-2 group-hover:text-[#16C79A] transition-colors">{project.title}</h3>
+      <Link to={`/projet/${project.id}`} className="block">
+        <h3 className="text-lg font-display font-semibold mb-2 group-hover:text-[#16C79A] transition-colors flex items-center gap-1.5">
+          {project.title}
+          <ArrowUpRight size={16} className="opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: 'var(--accent)' }} />
+        </h3>
+      </Link>
       <p className="text-sm mb-5 line-clamp-2" style={{ color: 'var(--text-secondary)' }}>{project.description}</p>
 
       <div className="flex flex-wrap gap-2 mb-6">
@@ -71,8 +108,9 @@ export default function Projects() {
   const containerRef = useRef(null);
   const dragX = useMotionValue(0);
 
-  // Always use local data — projects have local screenshot images
-  const projectsData = fallbackProjects;
+  // Projets pilotés depuis l'admin (Firestore), complétés par les visuels/descriptions locaux
+  const { projects } = useSiteData();
+  const projectsData = resolveProjects(projects);
 
   const categories = ['Tous', ...new Set(projectsData.map((p) => p.category))];
   const allFiltered = selectedCategory === 'Tous' ? projectsData : projectsData.filter((p) => p.category === selectedCategory);

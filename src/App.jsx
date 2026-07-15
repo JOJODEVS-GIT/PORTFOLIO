@@ -3,6 +3,8 @@ import { lazy, Suspense } from 'react';
 import PortfolioPage from './components/PortfolioPage';
 import LoadingSpinner from './components/LoadingSpinner';
 
+const ProjectDetail = lazy(() => import('./components/ProjectDetail'));
+
 // Lazy load admin routes — these pull in Firebase (~500KB) and admin UI
 const AdminLogin = lazy(() => import('./admin/AdminLogin'));
 const AdminLayout = lazy(() => import('./admin/AdminLayout'));
@@ -36,6 +38,7 @@ function App() {
     <Suspense fallback={<LoadingSpinner />}>
       <Routes>
         <Route path="/" element={<PortfolioPage />} />
+        <Route path="/projet/:id" element={<ProjectDetail />} />
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route
           path="/admin"
