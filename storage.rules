@@ -1,0 +1,25 @@
+rules_version = '2';
+
+// ============================================================
+//  Règles de sécurité Firebase Storage — uploads d'images admin
+//  ⚠️ REMPLACE 'TON_UID_ICI' par ton vrai UID admin
+//     (Firebase Console → Authentication → Users → "User UID")
+//  Déploiement : Console → Storage → Rules,
+//     ou `firebase deploy --only storage`
+// ============================================================
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // Lecture publique (les images s'affichent sur le site public).
+    // Upload/suppression : réservés à ton compte admin uniquement,
+    // et limités aux images de moins de 5 Mo.
+    match /{allPaths=**} {
+      allow read: if true;
+      allow write: if request.auth != null
+                   && request.auth.uid == 'TON_UID_ICI'
+                   && request.resource.size < 5 * 1024 * 1024
+                   && request.resource.contentType.matches('image/.*');
+    }
+  }
+}

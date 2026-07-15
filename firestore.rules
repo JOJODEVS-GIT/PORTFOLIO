@@ -1,0 +1,23 @@
+rules_version = '2';
+
+// ============================================================
+//  Règles de sécurité Firestore — portfolio JOJO.DEV's
+//  ⚠️ REMPLACE 'TON_UID_ICI' par ton vrai UID admin :
+//     Firebase Console → Authentication → Users → colonne "User UID"
+//  Déploiement : copie-colle dans Console → Firestore → Rules,
+//     ou `firebase deploy --only firestore:rules`
+// ============================================================
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Lecture publique : nécessaire pour afficher le contenu du site
+    // (hero, projets, témoignages...). Ne stocke JAMAIS de donnée privée ici.
+    // Écriture : réservée EXCLUSIVEMENT à ton compte admin.
+    match /{document=**} {
+      allow read: if true;
+      allow write: if request.auth != null
+                   && request.auth.uid == 'TON_UID_ICI';
+    }
+  }
+}
