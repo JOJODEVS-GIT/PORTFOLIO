@@ -1,0 +1,16 @@
+title = "Gitleaks — portfolio JOJO.DEV's"
+
+# Étend les règles par défaut de Gitleaks
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Valeurs publiques côté client (non secrètes par conception)"
+regexes = [
+  # Clé publique EmailJS — destinée au navigateur, pas un secret.
+  # (Sécurise-la plutôt via 'Allowed origins' dans le dashboard EmailJS.)
+  '''IqoZPdDav9ItaXlVw''',
+]
+paths = [
+  '''package-lock\.json''',
+]

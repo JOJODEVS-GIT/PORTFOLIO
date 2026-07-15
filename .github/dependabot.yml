@@ -1,0 +1,19 @@
+version: 2
+
+# Dependabot ouvre automatiquement des PR pour mettre à jour
+# les dépendances vulnérables ou obsolètes.
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "ci"

@@ -1,0 +1,59 @@
+name: Security
+
+# Sécurité automatique à chaque push et pull request :
+#  - Semgrep : analyse statique du code (SAST) → onglet Security
+#  - Gitleaks : détecte les secrets/clés commitées par erreur
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  semgrep:
+    name: Semgrep (analyse du code)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Installer Semgrep
+        run: pip install --quiet semgrep
+
+      - name: Analyser le code
+        continue-on-error: true
+        run: >
+          semgrep scan
+          --config=p/default
+          --config=p/react
+          --config=p/typescript
+          --config=p/secrets
+          --config=p/owasp-top-ten
+          --sarif --output=semgrep.sarif
+
+      - name: Publier les résultats dans l'onglet Security
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        continue-on-error: true
+        with:
+          sarif_file: semgrep.sarif
+
+  gitleaks:
+    name: Gitleaks (fuite de secrets)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Scanner les secrets
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
