@@ -3,16 +3,18 @@ import { getIcon } from '../utils/iconMap';
 import { useSiteData } from '../context/SiteDataContext';
 
 const fallbackSkills = [
-  { name: 'React / Next.js', iconName: 'Sparkles', color: 'text-[color:var(--accent)]' },
-  { name: 'WordPress', iconName: 'Globe', color: 'text-blue-400' },
-  { name: 'Python', iconName: 'Terminal', color: 'text-yellow-400' },
-  { name: 'TypeScript', iconName: 'Code2', color: 'text-blue-300' },
-  { name: 'JavaScript', iconName: 'Zap', color: 'text-yellow-300' },
-  { name: 'HTML / CSS', iconName: 'Layout', color: 'text-orange-400' },
-  { name: 'Tailwind / Bootstrap', iconName: 'Layers', color: 'text-cyan-400' },
-  { name: 'Figma (UI/UX)', iconName: 'Palette', color: 'text-pink-400' },
-  { name: 'Git / GitHub', iconName: 'GitBranch', color: 'text-orange-500' },
-  { name: 'SEO / Lighthouse', iconName: 'Search', color: 'text-green-400' },
+  { name: 'React / Next.js', iconName: 'Sparkles' },
+  { name: 'TypeScript', iconName: 'Code2' },
+  { name: 'JavaScript', iconName: 'Zap' },
+  { name: 'Python', iconName: 'Terminal' },
+  { name: 'HTML / CSS', iconName: 'Layout' },
+  { name: 'Tailwind CSS', iconName: 'Layers' },
+  { name: 'Firebase / Firestore', iconName: 'Database' },
+  { name: 'API REST', iconName: 'Server' },
+  { name: 'Git / GitHub', iconName: 'GitBranch' },
+  { name: 'CI/CD (GitHub Actions)', iconName: 'Rocket' },
+  { name: 'React Native', iconName: 'Smartphone' },
+  { name: 'Sécurité & SEO', iconName: 'Shield' },
 ];
 
 export default function Skills() {

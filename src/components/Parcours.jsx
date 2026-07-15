@@ -3,9 +3,9 @@ import { GraduationCap, Briefcase, Award, MapPin, Calendar } from 'lucide-react'
 import { useSiteData } from '../context/SiteDataContext';
 
 const fallbackParcours = [
-  { id: '1', type: 'formation', title: 'Formation Développement Web', organization: 'Autodidacte & Formations en ligne', location: 'Cotonou, Bénin', startDate: '2022', endDate: 'Présent', description: 'Apprentissage intensif de React, Next.js, TypeScript, Python et des technologies web modernes.' },
-  { id: '2', type: 'experience', title: 'Développeur Web Full Stack Freelance', organization: "JOJO.DEV's", location: 'Cotonou, Bénin', startDate: '2023', endDate: 'Présent', description: 'Création de sites web, applications et automatisations pour des clients locaux et internationaux.' },
-  { id: '3', type: 'certification', title: 'Certifications Web & Python', organization: 'Plateformes en ligne', location: 'En ligne', startDate: '2023', endDate: '2024', description: 'Certifications en développement web, Python, et bonnes pratiques de programmation.' },
+  { id: '1', type: 'experience', title: 'Développeur Full-Stack Freelance', organization: "JOJO.DEV's", location: 'Cotonou, Bénin', startDate: '2023', endDate: 'Présent', description: 'Conception de sites web, applications et automatisations pour des clients locaux et internationaux — du design à la mise en ligne, avec suivi après livraison.' },
+  { id: '2', type: 'formation', title: 'Développement Web Full-Stack', organization: 'Autodidacte & formations en ligne', location: 'Cotonou, Bénin', startDate: '2022', endDate: 'Présent', description: 'Maîtrise de React, Next.js, TypeScript, Python et Firebase, avec les bonnes pratiques modernes : Git, CI/CD et sécurité.' },
+  { id: '3', type: 'experience', title: 'Applications web modernes & sécurisées', organization: 'Projets clients & personnels', location: 'Cotonou, Bénin', startDate: '2024', endDate: 'Présent', description: 'E-commerce, dashboards et apps mobiles déployés sur Vercel, avec intégration continue (CI/CD) et sécurisation (règles Firebase, headers, audits).' },
 ];
 
 const typeConfig = {

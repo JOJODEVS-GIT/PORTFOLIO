@@ -3,8 +3,8 @@ import { Github, MessageCircle, Mail } from 'lucide-react';
 import { useSiteData } from '../context/SiteDataContext';
 
 const fallbackParagraphs = [
-  'Je suis Josué, développeur Full Stack basé à Cotonou 🇧🇯. Je crée des sites web modernes avec React et Next.js, des sites vitrine/e-commerce avec WordPress, et j\'automatise les process répétitifs avec Python.',
-  'Passionné par la technologie et l\'innovation, je transforme des idées en projets concrets et fonctionnels. Mon objectif : fournir des solutions digitales de qualité, adaptées aux réalités locales africaines.',
+  'Je suis Josué, développeur full-stack basé à Cotonou 🇧🇯. J\'aide les entreprises et entrepreneurs à exister en ligne avec des sites et applications modernes — React, Next.js — et à travailler plus intelligemment grâce à l\'automatisation Python.',
+  'Ce qui me distingue : je ne m\'arrête pas au design. Je livre un produit qui marche, rapidement, et je reste disponible après la mise en ligne. Des solutions concrètes, adaptées à votre budget et à votre réalité — que vous soyez une PME à Cotonou ou une équipe à l\'international.',
 ];
 
 const fallbackTagline = '📍 Cotonou, Bénin \u2022 🎯 Projets avec impact \u2022 💡 Full Stack & Automatisation';

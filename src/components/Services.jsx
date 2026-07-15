@@ -3,9 +3,10 @@ import { getIcon } from '../utils/iconMap';
 import { useSiteData } from '../context/SiteDataContext';
 
 const fallbackServices = [
-  { iconName: 'Globe', title: 'Création Web', description: 'Sites vitrine, e-commerce, applications web complètes avec React, Next.js et WordPress.', features: ['Sites vitrine', 'E-commerce', 'Applications web', 'Landing pages'] },
-  { iconName: 'Bot', title: 'Automatisation', description: 'Bots, scripts, génération automatique de documents avec Python et APIs.', features: ['Bots Python', 'Scripts automatisés', 'Génération de documents', 'Intégrations API'] },
-  { iconName: 'Palette', title: 'Conseil & Design', description: 'Maquettes Figma, cahiers des charges, audit SEO et conseil technique.', features: ['Maquettes Figma', 'Cahiers des charges', 'Audit SEO', 'Conseil technique'] },
+  { iconName: 'Globe', title: 'Création de sites & apps', description: 'Des sites vitrine, e-commerce et applications web rapides, modernes et pensés pour convertir vos visiteurs en clients.', features: ['Sites vitrine & landing pages', 'E-commerce', 'Applications web (React / Next.js)', 'Responsive & rapide'] },
+  { iconName: 'Bot', title: 'Automatisation & gain de temps', description: 'J\'automatise vos tâches répétitives — documents, données, relances — avec des scripts et bots Python sur mesure.', features: ['Bots & scripts Python', 'Génération de documents', 'Traitement de données', 'Intégrations API'] },
+  { iconName: 'Palette', title: 'Conseil, design & SEO', description: 'Maquettes, cahier des charges et audit SEO pour partir sur des bases solides et un site qu\'on trouve sur Google.', features: ['Maquettes (Figma)', 'Cahier des charges', 'Audit SEO & performance', 'Conseil technique'] },
+  { iconName: 'Shield', title: 'Maintenance & sécurité', description: 'Suivi après livraison, mises à jour, sauvegardes et sécurisation — pour un site qui reste rapide, sûr et à jour.', features: ['Suivi après livraison', 'Sécurité & sauvegardes', 'Mises à jour', 'Optimisation performance'] },
 ];
 
 export default function Services() {

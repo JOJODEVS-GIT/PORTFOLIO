@@ -4,15 +4,15 @@ import { useSiteData } from '../context/SiteDataContext';
 export default function Hero() {
   const { hero } = useSiteData();
 
-  const badge = hero?.badge || 'Bienvenue 👋';
+  const badge = hero?.badge || 'Développeur full-stack & automatisation · Cotonou 🇧🇯';
   const title = hero?.title || 'Salut, je suis';
   const name = hero?.name || 'Josué';
-  const subtitle = hero?.subtitle || 'Développeur Web Full Stack & Automatisation';
-  const description = hero?.description || 'Basé à Cotonou 🇧🇯, je transforme vos idées en solutions digitales performantes — sites web, applications et automatisations sur mesure.';
+  const subtitle = hero?.subtitle || "Des sites qui convertissent. Des tâches qui s'automatisent.";
+  const description = hero?.description || 'Je crée des sites web et applications modernes, rapides et fiables — pour les entreprises d\'ici comme d\'ailleurs. Et je vais plus loin : j\'automatise vos tâches répétitives pour vous faire gagner des heures chaque semaine.';
   const ctaPrimaryText = hero?.ctaPrimaryText || 'Voir mes projets';
   const ctaPrimaryLink = hero?.ctaPrimaryLink || '#projects';
-  const ctaSecondaryText = hero?.ctaSecondaryText || 'Mon GitHub';
-  const ctaSecondaryLink = hero?.ctaSecondaryLink || 'https://github.com/JOJODEVS-GIT';
+  const ctaSecondaryText = hero?.ctaSecondaryText || 'Discutons de votre projet';
+  const ctaSecondaryLink = hero?.ctaSecondaryLink || '#contact';
 
   const isExternal = ctaSecondaryLink.startsWith('http');
 
