@@ -1,15 +1,17 @@
 import { useState } from 'react';
 import { useNavigate, Navigate } from 'react-router-dom';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 import { auth } from '../firebase/config';
 import { useAuth } from '../context/AuthContext';
-import { LogIn, AlertCircle } from 'lucide-react';
+import { LogIn, AlertCircle, CheckCircle } from 'lucide-react';
 
 export default function AdminLogin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [info, setInfo] = useState('');
   const [loading, setLoading] = useState(false);
+  const [resetting, setResetting] = useState(false);
   const navigate = useNavigate();
   const { user } = useAuth();
 
@@ -20,6 +22,7 @@ export default function AdminLogin() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setInfo('');
     setLoading(true);
 
     try {
@@ -29,6 +32,24 @@ export default function AdminLogin() {
       setError('Email ou mot de passe incorrect');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleReset = async () => {
+    setError('');
+    setInfo('');
+    if (!email) {
+      setError("Entre d'abord ton email, puis clique sur « Mot de passe oublié »");
+      return;
+    }
+    setResetting(true);
+    try {
+      await sendPasswordResetEmail(auth, email);
+      setInfo('Email de réinitialisation envoyé. Regarde ta boîte mail (et les spams).');
+    } catch {
+      setError("Impossible d'envoyer le mail. Vérifie l'adresse email.");
+    } finally {
+      setResetting(false);
     }
   };
 
@@ -50,6 +71,13 @@ export default function AdminLogin() {
             <div className="mb-4 p-3 bg-red-500/20 border border-red-500/50 rounded-lg flex items-center gap-2 text-red-300 text-sm">
               <AlertCircle size={16} />
               {error}
+            </div>
+          )}
+
+          {info && (
+            <div className="mb-4 p-3 rounded-lg flex items-center gap-2 text-sm" style={{ background: 'var(--accent-glow)', border: '1px solid var(--accent)', color: 'var(--accent)' }}>
+              <CheckCircle size={16} />
+              {info}
             </div>
           )}
 
@@ -95,6 +123,16 @@ export default function AdminLogin() {
                   Se connecter
                 </>
               )}
+            </button>
+
+            <button
+              type="button"
+              onClick={handleReset}
+              disabled={resetting}
+              className="w-full text-sm transition-colors hover:text-[#16C79A] disabled:opacity-50"
+              style={{ color: 'var(--text-muted)' }}
+            >
+              {resetting ? 'Envoi en cours…' : 'Mot de passe oublié ?'}
             </button>
           </form>
         </div>
