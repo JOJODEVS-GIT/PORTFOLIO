@@ -91,6 +91,7 @@ const seedData = {
     { name: 'SQL / Bases de données', iconName: 'Database', order: 14 },
     { name: 'Bootstrap', iconName: 'Package', order: 15 },
     { name: 'n8n / Automatisation', iconName: 'Bot', order: 16 },
+    { name: 'Vue.js', iconName: 'Monitor', order: 17 },
   ],
 };
 

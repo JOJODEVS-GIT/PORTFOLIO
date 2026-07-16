@@ -20,6 +20,7 @@ const fallbackSkills = [
   { name: 'SQL / Bases de données', iconName: 'Database' },
   { name: 'Bootstrap', iconName: 'Package' },
   { name: 'n8n / Automatisation', iconName: 'Bot' },
+  { name: 'Vue.js', iconName: 'Monitor' },
 ];
 
 export default function Skills() {
