@@ -86,6 +86,11 @@ const seedData = {
     { name: 'CI/CD (GitHub Actions)', iconName: 'Rocket', order: 9 },
     { name: 'React Native', iconName: 'Smartphone', order: 10 },
     { name: 'Sécurité & SEO', iconName: 'Shield', order: 11 },
+    { name: 'PHP', iconName: 'FileCode', order: 12 },
+    { name: 'Laravel', iconName: 'Layers', order: 13 },
+    { name: 'SQL / Bases de données', iconName: 'Database', order: 14 },
+    { name: 'Bootstrap', iconName: 'Package', order: 15 },
+    { name: 'n8n / Automatisation', iconName: 'Bot', order: 16 },
   ],
 };
 

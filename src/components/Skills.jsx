@@ -15,6 +15,11 @@ const fallbackSkills = [
   { name: 'CI/CD (GitHub Actions)', iconName: 'Rocket' },
   { name: 'React Native', iconName: 'Smartphone' },
   { name: 'Sécurité & SEO', iconName: 'Shield' },
+  { name: 'PHP', iconName: 'FileCode' },
+  { name: 'Laravel', iconName: 'Layers' },
+  { name: 'SQL / Bases de données', iconName: 'Database' },
+  { name: 'Bootstrap', iconName: 'Package' },
+  { name: 'n8n / Automatisation', iconName: 'Bot' },
 ];
 
 export default function Skills() {
