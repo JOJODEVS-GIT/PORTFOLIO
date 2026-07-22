@@ -76,6 +76,7 @@ const seedData = {
     { title: 'Mon Produit', description: 'Dashboard de gestion de produits avec statistiques et suivi.', gradient: 'from-[#0F3460] to-blue-800', category: 'HTML/CSS/JS', tech: ['HTML', 'CSS', 'JavaScript'], github: 'https://github.com/JOJODEVS-GIT/MON-PRODUIT', live: 'https://mon-produit.vercel.app', imageUrl: '', order: 4 },
     { title: 'QCM JavaScript', description: 'Quiz interactif JavaScript — 60 questions, timer, stats par thème.', gradient: 'from-yellow-600 to-[#16C79A]', category: 'HTML/CSS/JS', tech: ['HTML', 'CSS', 'JavaScript'], github: 'https://github.com/JOJODEVS-GIT/QCM-JAVASCRIPT', live: 'https://qcm-javascript.vercel.app', imageUrl: '', order: 5 },
     { title: 'Suivi Chauffeur', description: 'Application de suivi et gestion de chauffeurs en temps réel.', gradient: 'from-[#16C79A] to-teal-700', category: 'HTML/CSS/JS', tech: ['HTML', 'CSS', 'JavaScript'], github: 'https://github.com/JOJODEVS-GIT/SUIVI-CHAUFFEUR', live: 'https://suivi-chauffeur.vercel.app', imageUrl: '', order: 6 },
+    { title: 'MERAYA — First Anniversary', description: 'Landing événementielle premium pour une marque de mode : hero vidéo, animations GSAP et réservation en ligne.', gradient: 'from-[#0F3460] to-[#16C79A]', category: 'React', tech: ['Next.js', 'React', 'TypeScript', 'GSAP', 'Tailwind'], github: 'https://github.com/JOJODEVS-GIT/meraya', live: 'https://meraya-demo.vercel.app', imageUrl: '/images/meraya.webp', order: 7 },
   ],
   skills: [
     { name: 'React / Next.js', iconName: 'Sparkles', order: 0 },
@@ -121,7 +122,7 @@ export default function Dashboard() {
       return;
     }
 
-    if (!confirm('Réinitialiser toutes les données avec les valeurs par défaut ?')) return;
+    if (!confirm('Synchroniser tout le contenu depuis le code ? (tes témoignages sont préservés)')) return;
 
     setSeeding(true);
     setStatus(null);
@@ -193,7 +194,8 @@ export default function Dashboard() {
       {/* Seed section */}
       <div className="card mb-8 text-center py-6">
         <Database size={32} className="mx-auto text-[#16C79A] mb-3" />
-        <h3 className="text-lg font-bold mb-2">Gestion des données</h3>
+        <h3 className="text-lg font-bold mb-2">Synchroniser le contenu</h3>
+        <p className="text-[var(--text-secondary)] text-xs mb-3">Applique en 1 clic le dernier contenu (services, compétences, projets, parcours…) préparé dans le code. Tes témoignages sont conservés.</p>
         <p className="text-[var(--text-secondary)] text-sm mb-1">
           Connecté : <strong className="text-[#16C79A]">{user?.email || 'Non connecté'}</strong>
         </p>
@@ -212,7 +214,7 @@ export default function Dashboard() {
             {seeding ? (
               <><div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" /> Import en cours...</>
             ) : (
-              <><RefreshCw size={18} /> {totalItems === 0 ? 'Importer les données' : 'Réinitialiser les données'}</>
+              <><RefreshCw size={18} /> Synchroniser depuis le code</>
             )}
           </button>
         </div>

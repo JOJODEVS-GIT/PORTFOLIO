@@ -5,8 +5,9 @@ const SiteDataContext = createContext(null);
 // ⚡ Source de vérité du contenu.
 //   true  = le CODE (fallbacks des composants). Firestore ignoré, admin en veille.
 //           → tout changement de contenu se fait dans le code + push = en ligne, zéro saisie.
-//   false = Firestore (admin) prioritaire, comme avant.
-const CONTENT_FROM_CODE = true;
+//   false = Firestore (admin) prioritaire. L'admin gère tout ; le bouton
+//           « Synchroniser depuis le code » du Dashboard applique le contenu du code en 1 clic.
+const CONTENT_FROM_CODE = false;
 
 const PROJECT_ID = 'jojo-portfolio';
 const BASE_URL = `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents`;
