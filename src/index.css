@@ -225,3 +225,24 @@ h1, h2, h3, h4, .font-display {
 .animate-fade-in { animation: fade-in 0.6s ease-out both; }
 .animate-hero-item { opacity: 0; animation: hero-item 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 .animate-bounce-slow { animation: bounce-slow 2.4s ease-in-out infinite; }
+
+/* Carrousel de témoignages (défilement continu, pause au survol, fondu sur les bords) */
+.tm-marquee {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+}
+.tm-track {
+  display: flex;
+  gap: 1.75rem;
+  width: max-content;
+  padding: 0.5rem 1rem;
+  animation: tm-scroll 64s linear infinite;
+}
+.tm-marquee:hover .tm-track { animation-play-state: paused; }
+.tm-card { width: 340px; flex-shrink: 0; }
+@keyframes tm-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) {
+  .tm-marquee { -webkit-mask-image: none; mask-image: none; }
+  .tm-track { animation: none; flex-wrap: wrap; justify-content: center; width: auto; }
+}
