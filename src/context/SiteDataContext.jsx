@@ -2,6 +2,12 @@ import { createContext, useContext, useState, useEffect, useMemo, useCallback } 
 
 const SiteDataContext = createContext(null);
 
+// ⚡ Source de vérité du contenu.
+//   true  = le CODE (fallbacks des composants). Firestore ignoré, admin en veille.
+//           → tout changement de contenu se fait dans le code + push = en ligne, zéro saisie.
+//   false = Firestore (admin) prioritaire, comme avant.
+const CONTENT_FROM_CODE = true;
+
 const PROJECT_ID = 'jojo-portfolio';
 const BASE_URL = `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents`;
 
@@ -69,6 +75,13 @@ export function SiteDataProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   const loadAllData = useCallback(async () => {
+    // Le code est la source de vérité : on n'interroge pas Firestore, chaque section
+    // rend son contenu par défaut. Les changements sont en ligne dès le push (zéro saisie).
+    if (CONTENT_FROM_CODE) {
+      setLoading(false);
+      return;
+    }
+
     const [siteData, heroData, aboutData, contactData, statsData, parcoursData, servicesData, projectsData, skillsData, testimonialsData] = await Promise.all([
       fetchDoc('settings', 'site'),
       fetchDoc('settings', 'hero'),
