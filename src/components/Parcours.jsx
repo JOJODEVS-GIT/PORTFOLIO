@@ -1,6 +1,5 @@
 import { motion } from 'framer-motion';
-import { GraduationCap, Briefcase, Award, MapPin, Calendar, ChevronLeft, ChevronRight } from 'lucide-react';
-import { useRef } from 'react';
+import { GraduationCap, Briefcase, Award, MapPin, Calendar } from 'lucide-react';
 import { useSiteData } from '../context/SiteDataContext';
 
 const fallbackParcours = [
@@ -16,35 +15,8 @@ const typeConfig = {
   certification: { icon: Award, label: 'Certification', hex: '#c9a96e' },
 };
 
-export default function Parcours() {
-  const { parcours } = useSiteData();
-  const parcoursData = parcours.length ? parcours : fallbackParcours;
-
-  const scrollRef = useRef(null);
-  const drag = useRef({ down: false, startX: 0, startLeft: 0, moved: false });
-
-  const nudge = (dir) => scrollRef.current?.scrollBy({ left: dir * 340, behavior: 'smooth' });
-
-  // Glisser-déposer à la souris (desktop)
-  const onDown = (e) => {
-    const el = scrollRef.current;
-    if (!el) return;
-    drag.current = { down: true, startX: e.pageX, startLeft: el.scrollLeft, moved: false };
-    el.classList.add('cursor-grabbing');
-  };
-  const onMove = (e) => {
-    const el = scrollRef.current;
-    if (!el || !drag.current.down) return;
-    const dx = e.pageX - drag.current.startX;
-    if (Math.abs(dx) > 4) drag.current.moved = true;
-    el.scrollLeft = drag.current.startLeft - dx;
-  };
-  const onUp = () => {
-    drag.current.down = false;
-    scrollRef.current?.classList.remove('cursor-grabbing');
-  };
-
-  const Card = ({ item, config }) => (
+function Card({ item, config }) {
+  return (
     <div className="card w-[264px] sm:w-[292px]">
       <div className="flex items-center gap-2 mb-3">
         <span className="px-2.5 py-1 rounded text-[0.65rem] uppercase" style={{ background: config.hex, color: '#05100c', fontFamily: 'var(--font-mono)', letterSpacing: '0.1em' }}>{config.label}</span>
@@ -58,9 +30,16 @@ export default function Parcours() {
       {item.description && <p className="text-sm leading-relaxed line-clamp-3" style={{ color: 'var(--text-secondary)' }}>{item.description}</p>}
     </div>
   );
+}
+
+export default function Parcours() {
+  const { parcours } = useSiteData();
+  const parcoursData = parcours.length ? parcours : fallbackParcours;
+  // Duplication pour un défilement continu et sans couture (comme les témoignages)
+  const loop = [...parcoursData, ...parcoursData];
 
   return (
-    <section id="parcours" className="py-20 overflow-hidden">
+    <section id="parcours" className="py-20">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }}
           className="section-heading !mb-4">
@@ -70,91 +49,58 @@ export default function Parcours() {
         </motion.div>
 
         <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
-          className="mb-10 max-w-2xl" style={{ color: 'var(--text-secondary)' }}>
+          className="mb-8 max-w-2xl" style={{ color: 'var(--text-secondary)' }}>
           Formations, expériences et certifications.
         </motion.p>
 
-        {/* Légende + flèches de navigation */}
-        <div className="flex items-center justify-between gap-4 mb-8">
-          <div className="flex flex-wrap gap-x-6 gap-y-2">
-            {Object.entries(typeConfig).map(([key, config]) => (
-              <div key={key} className="flex items-center gap-2 text-sm" style={{ color: 'var(--text-secondary)' }}>
-                <div className="w-2.5 h-2.5 rounded-full" style={{ background: config.hex }} />
-                {config.label}
-              </div>
-            ))}
-          </div>
-          <div className="hidden sm:flex items-center gap-2">
-            <button type="button" onClick={() => nudge(-1)} aria-label="Étape précédente"
-              className="w-10 h-10 rounded-full flex items-center justify-center transition-colors hover:bg-[color:var(--accent-a10)]"
-              style={{ border: '1px solid var(--border-card)', color: 'var(--text-secondary)' }}>
-              <ChevronLeft size={18} />
-            </button>
-            <button type="button" onClick={() => nudge(1)} aria-label="Étape suivante"
-              className="w-10 h-10 rounded-full flex items-center justify-center transition-colors hover:bg-[color:var(--accent-a10)]"
-              style={{ border: '1px solid var(--border-card)', color: 'var(--text-secondary)' }}>
-              <ChevronRight size={18} />
-            </button>
-          </div>
-        </div>
+        {/* Légende */}
+        <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
+          className="flex flex-wrap gap-x-6 gap-y-2 mb-6">
+          {Object.entries(typeConfig).map(([key, config]) => (
+            <div key={key} className="flex items-center gap-2 text-sm" style={{ color: 'var(--text-secondary)' }}>
+              <div className="w-2.5 h-2.5 rounded-full" style={{ background: config.hex }} />
+              {config.label}
+            </div>
+          ))}
+        </motion.div>
       </div>
 
-      {/* Timeline horizontale déroulante */}
-      <div className="relative">
-        {/* Dégradés sur les bords (indiquent qu'on peut défiler) */}
-        <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-10 sm:w-20 z-20" style={{ background: 'linear-gradient(90deg, var(--bg-primary), transparent)' }} />
-        <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-10 sm:w-20 z-20" style={{ background: 'linear-gradient(270deg, var(--bg-primary), transparent)' }} />
+      {/* Carrousel horizontal auto (défilement continu, pause au survol, fondus sur les bords) */}
+      <div className="pc-marquee relative">
+        {/* Ligne centrale horizontale (statique, au centre des nœuds) */}
+        <div className="absolute left-0 right-0 top-1/2 h-px -translate-y-1/2 z-0" style={{ background: 'var(--accent-a20)' }} />
 
-        <div
-          ref={scrollRef}
-          onMouseDown={onDown}
-          onMouseMove={onMove}
-          onMouseUp={onUp}
-          onMouseLeave={onUp}
-          className="hide-scrollbar overflow-x-auto cursor-grab snap-x snap-mandatory select-none"
-        >
-          <div className="relative flex items-stretch gap-4 px-6 sm:px-16 lg:px-[max(4rem,calc(50%-150px))]">
-            {/* Ligne centrale horizontale (au centre des nœuds) */}
-            <div className="absolute left-0 right-0 h-px" style={{ top: 'calc(280px + 1.125rem)', background: 'var(--accent-a20)' }} />
+        <div className="pc-track px-4">
+          {loop.map((item, idx) => {
+            const config = typeConfig[item.type] || typeConfig.experience;
+            const IconComponent = config.icon;
+            const isTop = idx % 2 === 0;
 
-            {parcoursData.map((item, idx) => {
-              const config = typeConfig[item.type] || typeConfig.experience;
-              const IconComponent = config.icon;
-              const isTop = idx % 2 === 0;
+            return (
+              <div key={`${item.id}-${idx}`} className="relative z-10 shrink-0 w-[264px] sm:w-[292px] flex flex-col">
+                {/* Emplacement haut */}
+                <div className="h-[330px] flex items-end justify-center pb-6">
+                  {isTop && <Card item={item} config={config} />}
+                </div>
 
-              return (
-                <motion.div
-                  key={item.id}
-                  initial={{ opacity: 0, y: isTop ? -24 : 24 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.05 }}
-                  viewport={{ once: true }}
-                  className="snap-center shrink-0 w-[264px] sm:w-[292px] flex flex-col"
-                >
-                  {/* Emplacement haut */}
-                  <div className="h-[280px] flex items-end justify-center pb-6">
-                    {isTop && <Card item={item} config={config} />}
+                {/* Nœud sur la ligne + connecteur */}
+                <div className="relative flex items-center justify-center" style={{ height: '2.25rem' }}>
+                  <div
+                    className="absolute left-1/2 -translate-x-1/2 w-px"
+                    style={{ background: 'var(--accent-a20)', height: '1.5rem', [isTop ? 'bottom' : 'top']: '100%' }}
+                  />
+                  <div className="w-9 h-9 rounded-full flex items-center justify-center z-10 ring-4" style={{ background: config.hex, '--tw-ring-color': 'var(--bg-primary)' }}>
+                    <IconComponent size={17} style={{ color: '#05100c' }} />
                   </div>
+                </div>
 
-                  {/* Nœud sur la ligne + connecteur */}
-                  <div className="relative flex items-center justify-center" style={{ height: '2.25rem' }}>
-                    <div
-                      className="absolute left-1/2 -translate-x-1/2 w-px"
-                      style={{ background: 'var(--accent-a20)', height: '1.5rem', [isTop ? 'bottom' : 'top']: '100%' }}
-                    />
-                    <div className="w-9 h-9 rounded-full flex items-center justify-center z-10 ring-4" style={{ background: config.hex, '--tw-ring-color': 'var(--bg-primary)' }}>
-                      <IconComponent size={17} style={{ color: '#05100c' }} />
-                    </div>
-                  </div>
-
-                  {/* Emplacement bas */}
-                  <div className="h-[280px] flex items-start justify-center pt-6">
-                    {!isTop && <Card item={item} config={config} />}
-                  </div>
-                </motion.div>
-              );
-            })}
-          </div>
+                {/* Emplacement bas */}
+                <div className="h-[330px] flex items-start justify-center pt-6">
+                  {!isTop && <Card item={item} config={config} />}
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>
