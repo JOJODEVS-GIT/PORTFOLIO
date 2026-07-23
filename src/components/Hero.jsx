@@ -1,4 +1,4 @@
-import { ArrowRight, ExternalLink } from 'lucide-react';
+import { ArrowRight, ExternalLink, Download } from 'lucide-react';
 import { useSiteData } from '../context/SiteDataContext';
 
 export default function Hero() {
@@ -81,6 +81,14 @@ export default function Hero() {
           >
             {ctaSecondaryText}
             <ExternalLink size={16} className="opacity-70 group-hover:opacity-100 transition-opacity" />
+          </a>
+          <a
+            href="/cv-josue-hounkanrin.pdf"
+            download
+            className="inline-flex items-center gap-2 text-sm font-medium transition-colors hover:text-[color:var(--accent)]"
+            style={{ color: 'var(--text-muted)' }}
+          >
+            <Download size={16} /> Télécharger mon CV
           </a>
         </div>
       </div>

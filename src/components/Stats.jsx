@@ -53,7 +53,8 @@ function CountUp({ target }) {
 
 export default function Stats() {
   const { stats } = useSiteData();
-  const statsData = stats.length ? stats : fallbackStats;
+  // Sécurité : si Firestore est vide OU contient des valeurs périmées à 0, on affiche les vraies valeurs.
+  const statsData = stats.length && stats.some((s) => Number(s.number) > 0) ? stats : fallbackStats;
 
   return (
     <section id="stats" className="py-20 px-4 sm:px-6 lg:px-8" style={{ backgroundColor: 'var(--bg-primary)' }}>

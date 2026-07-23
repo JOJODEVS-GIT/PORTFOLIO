@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react';
 import Navbar from './Navbar';
 import Hero from './Hero';
+import WhatsAppButton from './WhatsAppButton';
 
 // Lazy load below-the-fold sections
 const Stats = lazy(() => import('./Stats'));
@@ -39,6 +40,7 @@ export default function PortfolioPage() {
       <Suspense fallback={null}>
         <Footer />
       </Suspense>
+      <WhatsAppButton />
     </div>
   );
 }
