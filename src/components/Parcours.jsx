@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { GraduationCap, Briefcase, Award, MapPin, Calendar } from 'lucide-react';
+import { useEffect, useRef } from 'react';
 import { useSiteData } from '../context/SiteDataContext';
 
 const fallbackParcours = [
@@ -38,6 +39,51 @@ export default function Parcours() {
   // Duplication pour un défilement continu et sans couture (comme les témoignages)
   const loop = [...parcoursData, ...parcoursData];
 
+  const scrollerRef = useRef(null);
+  // paused = survol · drag = glisser à la main · pos = position flottante pour un défilement fluide
+  const state = useRef({ paused: false, drag: false, startX: 0, startLeft: 0, last: 0, pos: 0 });
+
+  // Défilement automatique lent + boucle sans couture, piloté en JS pour permettre le scroll manuel au survol
+  useEffect(() => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const PX_PER_SEC = 10; // lent
+    let raf;
+    const tick = (t) => {
+      const s = state.current;
+      if (!s.last) s.last = t;
+      const dt = (t - s.last) / 1000;
+      s.last = t;
+      const half = el.scrollWidth / 2;
+      if (!reduce && !s.paused && !s.drag && half > 0) {
+        s.pos += PX_PER_SEC * dt;
+        if (s.pos >= half) s.pos -= half;
+        else if (s.pos < 0) s.pos += half;
+        el.scrollLeft = s.pos;
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
+  const syncPos = () => { const el = scrollerRef.current; if (el) state.current.pos = el.scrollLeft; };
+  const onEnter = () => { state.current.paused = true; };
+  const onLeave = () => { state.current.drag = false; scrollerRef.current?.classList.remove('pc-dragging'); syncPos(); state.current.paused = false; };
+  const onDown = (e) => {
+    const s = state.current;
+    s.drag = true; s.startX = e.pageX; s.startLeft = scrollerRef.current.scrollLeft;
+    scrollerRef.current.classList.add('pc-dragging');
+  };
+  const onMove = (e) => {
+    const s = state.current;
+    if (!s.drag) return;
+    e.preventDefault();
+    scrollerRef.current.scrollLeft = s.startLeft - (e.pageX - s.startX);
+  };
+  const onUp = () => { state.current.drag = false; scrollerRef.current?.classList.remove('pc-dragging'); syncPos(); };
+
   return (
     <section id="parcours" className="py-20">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -65,12 +111,21 @@ export default function Parcours() {
         </motion.div>
       </div>
 
-      {/* Carrousel horizontal auto (défilement continu, pause au survol, fondus sur les bords) */}
-      <div className="pc-marquee relative">
-        {/* Ligne centrale horizontale (statique, au centre des nœuds) */}
+      {/* Carrousel horizontal auto — pause + glisser gauche/droite au survol, fondus sur les bords */}
+      <div className="relative">
+        {/* Ligne centrale horizontale (statique : les nœuds défilent dessus) */}
         <div className="absolute left-0 right-0 top-1/2 h-px -translate-y-1/2 z-0" style={{ background: 'var(--accent-a20)' }} />
 
-        <div className="pc-track px-4">
+        <div
+          ref={scrollerRef}
+          onMouseEnter={onEnter}
+          onMouseLeave={onLeave}
+          onMouseDown={onDown}
+          onMouseMove={onMove}
+          onMouseUp={onUp}
+          className="pc-marquee relative z-10"
+        >
+          <div className="pc-track px-4">
           {loop.map((item, idx) => {
             const config = typeConfig[item.type] || typeConfig.experience;
             const IconComponent = config.icon;
@@ -101,6 +156,7 @@ export default function Parcours() {
               </div>
             );
           })}
+          </div>
         </div>
       </div>
     </section>
