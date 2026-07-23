@@ -32,6 +32,28 @@ function toFields(obj) {
   return fields;
 }
 
+/** Convert a Firestore REST value back to a JS value */
+function fromFirestoreValue(val) {
+  if (!val) return null;
+  if ('stringValue' in val) return val.stringValue;
+  if ('integerValue' in val) return Number(val.integerValue);
+  if ('doubleValue' in val) return val.doubleValue;
+  if ('booleanValue' in val) return val.booleanValue;
+  if ('nullValue' in val) return null;
+  if ('arrayValue' in val) return (val.arrayValue.values || []).map(fromFirestoreValue);
+  if ('mapValue' in val) return fromFields(val.mapValue.fields || {});
+  return null;
+}
+
+/** Convert Firestore REST fields back to a JS object */
+function fromFields(fields) {
+  const obj = {};
+  for (const [key, val] of Object.entries(fields || {})) {
+    obj[key] = fromFirestoreValue(val);
+  }
+  return obj;
+}
+
 /** Get auth token from Firebase user */
 async function getToken(user) {
   return user.getIdToken();
@@ -96,10 +118,26 @@ export async function restListDocs(user, collectionName) {
   }
   const body = await res.json();
   if (!body.documents) return [];
-  return body.documents.map((doc) => {
-    const name = doc.name.split('/').pop();
-    return { id: name };
+  return body.documents.map((doc) => ({
+    id: doc.name.split('/').pop(),
+    ...fromFields(doc.fields || {}),
+  }));
+}
+
+/** Get a single document (returns its data, or null if it doesn't exist) */
+export async function restGetDoc(user, collectionName, docId) {
+  const token = await getToken(user);
+  const url = `${BASE_URL}/${collectionName}/${docId}`;
+  const res = await fetch(url, {
+    headers: { 'Authorization': `Bearer ${token}` },
   });
+  if (res.status === 404) return null;
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(`getDoc ${collectionName}/${docId}: ${res.status} — ${err}`);
+  }
+  const body = await res.json();
+  return body.fields ? fromFields(body.fields) : null;
 }
 
 /** Clear all documents in a collection */

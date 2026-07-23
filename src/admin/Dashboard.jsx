@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useSiteData } from '../context/SiteDataContext';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { restSetDoc, restAddDoc, restClearCollection } from '../firebase/firestoreRest';
+import { restSetDoc, restAddDoc, restListDocs, restGetDoc } from '../firebase/firestoreRest';
 import {
   Settings, Sparkles, BarChart3, User, Route,
   Briefcase, FolderGit2, Code2, Mail, Database, CheckCircle, AlertCircle, RefreshCw
@@ -119,44 +119,83 @@ export default function Dashboard() {
 
   const totalItems = stats.length + parcours.length + services.length + projects.length + skills.length;
 
+  // Champ servant d'identité stable pour chaque collection (pour reconnaître un élément).
+  const KEY_FIELD = { stats: 'label', parcours: 'title', services: 'title', projects: 'github', skills: 'name' };
+  const keyOf = (col, item) => String(item?.[KEY_FIELD[col]] ?? '').trim();
+
   const handleSeed = async () => {
     if (!user) {
-      setStatus({ type: 'error', message: 'Vous devez être connecté pour importer des données.' });
+      setStatus({ type: 'error', message: 'Vous devez être connecté pour synchroniser.' });
       return;
     }
 
-    if (!confirm('Synchroniser tout le contenu depuis le code ? (tes témoignages sont préservés)')) return;
+    if (!confirm(
+      'Synchroniser depuis le code ?\n\n'
+      + '• Les nouveautés du code sont AJOUTÉES\n'
+      + "• L'existant est mis à jour\n"
+      + '• Ce que tu as SUPPRIMÉ ne revient jamais\n\n'
+      + '(Tes témoignages sont préservés)'
+    )) return;
 
     setSeeding(true);
     setStatus(null);
     const colNames = ['stats', 'parcours', 'services', 'projects', 'skills'];
     try {
-      // ALWAYS clear collections first to avoid duplicates
-      setStatus({ type: 'info', message: 'Suppression des anciennes données...' });
-      for (const colName of colNames) {
-        await restClearCollection(user, colName);
-      }
+      // 1) Registre des éléments déjà appliqués (pour ne jamais ressusciter une suppression)
+      setStatus({ type: 'info', message: 'Lecture du registre de synchronisation...' });
+      const ledgerDoc = await restGetDoc(user, 'settings', 'syncLedger');
+      const applied = new Set(Array.isArray(ledgerDoc?.appliedKeys) ? ledgerDoc.appliedKeys : []);
 
-      // Seed settings via REST
-      setStatus({ type: 'info', message: 'Import des paramètres...' });
-      for (const [docId, data] of Object.entries(seedData.settings)) {
-        await restSetDoc(user, 'settings', docId, data);
-      }
+      let added = 0, updated = 0, skipped = 0;
 
-      // Seed collections via REST
-      let done = 0;
-      const totalDocs = colNames.reduce((sum, c) => sum + seedData[c].length, 0);
-      for (const colName of colNames) {
-        for (const item of seedData[colName]) {
-          await restAddDoc(user, colName, item);
-          done++;
-          setStatus({ type: 'info', message: `Import en cours... ${done}/${totalDocs}` });
+      // 2) Collections : ajout des nouveautés, mise à jour de l'existant, respect des suppressions
+      for (const col of colNames) {
+        const current = await restListDocs(user, col);
+        const byKey = {};
+        for (const d of current) {
+          const k = keyOf(col, d);
+          if (k) byKey[k] = d;
+        }
+        for (const item of seedData[col]) {
+          const k = keyOf(col, item);
+          const lkey = `${col}:${k}`;
+          const existing = byKey[k];
+          if (existing) {
+            await restSetDoc(user, col, existing.id, item); // mise à jour depuis le code
+            applied.add(lkey);
+            updated++;
+          } else if (applied.has(lkey)) {
+            skipped++; // supprimé volontairement -> on NE remet PAS
+          } else {
+            await restAddDoc(user, col, item); // vraie nouveauté
+            applied.add(lkey);
+            added++;
+          }
+          setStatus({ type: 'info', message: `Synchro... +${added} ajoutés · ${updated} à jour · ${skipped} suppressions respectées` });
         }
       }
 
+      // 3) Réglages (hero, about, site, contact) : mis à jour depuis le code
+      for (const [docId, data] of Object.entries(seedData.settings)) {
+        const lkey = `settings:${docId}`;
+        const existing = await restGetDoc(user, 'settings', docId);
+        if (existing) {
+          await restSetDoc(user, 'settings', docId, data);
+          applied.add(lkey);
+        } else if (!applied.has(lkey)) {
+          await restSetDoc(user, 'settings', docId, data);
+          applied.add(lkey);
+        } else {
+          skipped++;
+        }
+      }
+
+      // 4) Sauvegarde du registre
+      await restSetDoc(user, 'settings', 'syncLedger', { appliedKeys: Array.from(applied) });
+
       await refreshData();
-      setStatus({ type: 'success', message: `${totalDocs} éléments importés avec succès !` });
-      setTimeout(() => setStatus(null), 5000);
+      setStatus({ type: 'success', message: `Synchro terminée — ${added} ajoutés, ${updated} mis à jour, ${skipped} suppressions respectées.` });
+      setTimeout(() => setStatus(null), 6000);
     } catch (err) {
       console.error('Seed error:', err);
       setStatus({ type: 'error', message: `Erreur: ${err.message}` });
@@ -198,7 +237,7 @@ export default function Dashboard() {
       <div className="card mb-8 text-center py-6">
         <Database size={32} className="mx-auto text-[#16C79A] mb-3" />
         <h3 className="text-lg font-bold mb-2">Synchroniser le contenu</h3>
-        <p className="text-[var(--text-secondary)] text-xs mb-3">Applique en 1 clic le dernier contenu (services, compétences, projets, parcours…) préparé dans le code. Tes témoignages sont conservés.</p>
+        <p className="text-[var(--text-secondary)] text-xs mb-3">Applique en 1 clic les nouveautés et mises à jour du code (projets, compétences, services…). <strong>Ce que tu as supprimé ici ne revient jamais</strong>, et tes témoignages sont conservés. <em>Pense à rafraîchir la page publique après.</em></p>
         <p className="text-[var(--text-secondary)] text-sm mb-1">
           Connecté : <strong className="text-[#16C79A]">{user?.email || 'Non connecté'}</strong>
         </p>
