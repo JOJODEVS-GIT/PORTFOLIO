@@ -246,3 +246,7 @@ h1, h2, h3, h4, .font-display {
   .tm-marquee { -webkit-mask-image: none; mask-image: none; }
   .tm-track { animation: none; flex-wrap: wrap; justify-content: center; width: auto; }
 }
+
+/* Scrollbar masquée (timeline horizontale du Parcours) */
+.hide-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
+.hide-scrollbar::-webkit-scrollbar { display: none; }

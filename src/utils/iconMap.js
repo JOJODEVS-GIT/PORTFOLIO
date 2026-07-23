@@ -6,6 +6,7 @@ import {
   GraduationCap, Award, Heart, Shield, Smartphone, Database,
   Server, Cloud, Lock, Settings, Star, Rocket, Users, FileCode,
   Monitor, Wifi, Coffee, Package, Cpu, HardDrive, Wrench, PenTool,
+  BrainCircuit, Wand2,
 } from 'lucide-react';
 
 const iconMap = {
@@ -14,6 +15,7 @@ const iconMap = {
   GraduationCap, Award, Heart, Shield, Smartphone, Database,
   Server, Cloud, Lock, Settings, Star, Rocket, Users, FileCode,
   Monitor, Wifi, Coffee, Package, Cpu, HardDrive, Wrench, PenTool,
+  BrainCircuit, Wand2,
 };
 
 export function getIcon(name, fallbackName = 'Code2') {
