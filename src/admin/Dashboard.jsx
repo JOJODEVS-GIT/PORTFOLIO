@@ -177,15 +177,16 @@ export default function Dashboard() {
         }
       }
 
-      // 3) Réglages (hero, about, site, contact) : mis à jour depuis le code
+      // 3) Réglages (hero, about, site, contact) : créés au 1er seed, puis l'ADMIN fait foi.
+      //    -> on n'écrase JAMAIS ce que tu as modifié dans l'admin (photo À propos, textes...).
       for (const [docId, data] of Object.entries(seedData.settings)) {
         const lkey = `settings:${docId}`;
         const existing = await restGetDoc(user, 'settings', docId);
         if (existing) {
-          await restSetDoc(user, 'settings', docId, data);
-          applied.add(lkey);
+          applied.add(lkey);   // déjà présent -> on garde TA version admin, pas d'écrasement
+          skipped++;
         } else if (!applied.has(lkey)) {
-          await restSetDoc(user, 'settings', docId, data);
+          await restSetDoc(user, 'settings', docId, data);  // première création seulement
           applied.add(lkey);
         } else {
           skipped++;
