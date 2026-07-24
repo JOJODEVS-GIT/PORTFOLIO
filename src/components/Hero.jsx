@@ -82,14 +82,18 @@ export default function Hero() {
             {ctaSecondaryText}
             <ExternalLink size={16} className="opacity-70 group-hover:opacity-100 transition-opacity" />
           </a>
-          <a
-            href="/cv-josue-hounkanrin.pdf"
-            download
-            className="inline-flex items-center gap-2 text-sm font-medium transition-colors hover:text-[color:var(--accent)]"
+          <div
+            className="inline-flex items-center gap-2 text-sm font-medium"
             style={{ color: 'var(--text-muted)' }}
           >
-            <Download size={16} /> Télécharger mon CV
-          </a>
+            <Download size={16} />
+            <span>Télécharger mon CV :</span>
+            <a href="/cv-josue-hounkanrin.pdf" download
+               className="underline underline-offset-2 transition-colors hover:text-[color:var(--accent)]">FR</a>
+            <span aria-hidden="true" className="opacity-50">·</span>
+            <a href="/cv-josue-hounkanrin-en.pdf" download
+               className="underline underline-offset-2 transition-colors hover:text-[color:var(--accent)]">EN</a>
+          </div>
         </div>
       </div>
 
