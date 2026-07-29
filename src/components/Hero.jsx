@@ -99,7 +99,7 @@ export default function Hero() {
 
       {/* Indicateur de scroll */}
       <div
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 animate-hero-item"
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 hidden md:flex flex-col items-center gap-3 animate-hero-item"
         style={{ animationDelay: '1.3s' }}
         aria-hidden="true"
       >
